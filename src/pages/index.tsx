@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CaretRight } from 'phosphor-react'
 
-import { trpc } from "../utils/trpc";
+// import { trpc } from "../utils/trpc";
 
 import rocketseatLogoImg from '../assets/logo-rocketseat.svg';
 
