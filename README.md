@@ -1,3 +1,11 @@
+## Installation
+
+```sh
+npm i
+npx prisma migrate dev
+npm run dev
+```
+
 # Quiz
 
 id
