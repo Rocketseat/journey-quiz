@@ -45,7 +45,7 @@ export default function Results() {
         </div>
 
         <p className="text-md text-gray-500">
-          <div className="inline ml-4 space-x-4">
+          <div className="inline space-x-4">
             <a href="#" className="text-zinc-400 hover:text-violet-300">
               <span className="sr-only">Facebook</span>
               <svg className="h-6 w-6 inline" fill="currentColor" viewBox="0 0 24 24">
