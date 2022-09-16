@@ -1,10 +1,12 @@
-import superjson from "superjson";
+import superjson from 'superjson'
 
-import { createRouter } from "./context";
-import { exampleRouter } from "./example";
+import { createRouter } from './context'
+import { quizRouter } from './quiz'
+import { submissionRouter } from './submission'
 
 export const appRouter = createRouter()
   .transformer(superjson)
-  .merge("example.", exampleRouter)
+  .merge('quiz.', quizRouter)
+  .merge('submission.', submissionRouter)
 
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter

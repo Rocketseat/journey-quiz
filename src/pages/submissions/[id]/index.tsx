@@ -1,7 +1,7 @@
 import Head from 'next/head'
-import * as RadioGroup from '@radix-ui/react-radio-group';
-import { Check } from 'phosphor-react';
-import Link from 'next/link';
+import * as RadioGroup from '@radix-ui/react-radio-group'
+import { Check } from 'phosphor-react'
+import Link from 'next/link'
 
 export default function Submission() {
   return (
@@ -22,14 +22,19 @@ export default function Submission() {
         <div className="flex justify-between items-center">
           <p className="text-md font-medium p-3">
             Questão 12 de 20
-            <span className="hidden sm:inline sm:mx-1 text-gray-400" aria-hidden="true">
+            <span
+              className="hidden sm:inline sm:mx-1 text-gray-400"
+              aria-hidden="true"
+            >
               &middot;
             </span>{' '}
             <strong className="block sm:inline">Teste de JavaScript</strong>
           </p>
           <p className="text-md align-right font-medium p-3">
-            Tempo p/ resposta: 
-            <span className="font-bold py-1 px-2 ml-1 bg-violet-500 text-white">2:00</span>
+            Tempo p/ resposta:
+            <span className="font-bold py-1 px-2 ml-1 bg-violet-500 text-white">
+              2:00
+            </span>
           </p>
         </div>
       </div>
@@ -38,45 +43,58 @@ export default function Submission() {
         <div className="mt-4">
           <h2 className="text-2xl font-bold">Questão 12</h2>
           <p className="text-lg leading-8 mt-4">
-            No JavaScript, qual método utilizamos para percorrer um array criando um novo array a partir da operação?
+            No JavaScript, qual método utilizamos para percorrer um array
+            criando um novo array a partir da operação?
           </p>
 
           <RadioGroup.Root className="mt-6 space-y-4">
-            <RadioGroup.Item value="1" className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500">
+            <RadioGroup.Item
+              value="1"
+              className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
+            >
               <span className="font-medium text-zinc-300">
                 Método <code>.map</code>
               </span>
-              
+
               <RadioGroup.Indicator>
                 <Check className="w-5 h-5 ml-auto text-violet-500" />
               </RadioGroup.Indicator>
             </RadioGroup.Item>
 
-            <RadioGroup.Item value="2" className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500">
+            <RadioGroup.Item
+              value="2"
+              className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
+            >
               <span className="font-medium text-zinc-300">
                 Método <code>.forEach</code>
               </span>
-              
+
               <RadioGroup.Indicator>
                 <Check className="w-5 h-5 ml-auto text-violet-500" />
               </RadioGroup.Indicator>
             </RadioGroup.Item>
 
-            <RadioGroup.Item value="3" className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500">
+            <RadioGroup.Item
+              value="3"
+              className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
+            >
               <span className="font-medium text-zinc-300">
                 Método <code>for..of</code>
               </span>
-              
+
               <RadioGroup.Indicator>
                 <Check className="w-5 h-5 ml-auto text-violet-500" />
               </RadioGroup.Indicator>
             </RadioGroup.Item>
 
-            <RadioGroup.Item value="4" className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500">
+            <RadioGroup.Item
+              value="4"
+              className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
+            >
               <span className="font-medium text-zinc-300">
                 Método <code>for..in</code>
               </span>
-              
+
               <RadioGroup.Indicator>
                 <Check className="w-5 h-5 ml-auto text-violet-500" />
               </RadioGroup.Indicator>
