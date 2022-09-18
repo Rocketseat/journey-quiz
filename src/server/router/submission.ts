@@ -85,7 +85,7 @@ export const submissionRouter = createRouter()
         },
       )
 
-      const currentQuestionNumber = alreadyAnsweredQuestionsIds.length
+      const currentQuestionNumber = alreadyAnsweredQuestionsIds.length ?? 1
 
       if (inProgressQuestion) {
         const currentQuestion = await ctx.prisma.question.findUnique({
@@ -100,7 +100,7 @@ export const submissionRouter = createRouter()
         return {
           status: 'ongoing',
           currentQuestionNumber,
-          remainingTimeInSeconds: 120,
+          remainingTimeInSeconds: 5,
           description: currentQuestion?.description,
           answers: currentQuestion?.answers.map((answer) => {
             return {
@@ -138,7 +138,7 @@ export const submissionRouter = createRouter()
         return {
           status: 'ongoing',
           currentQuestionNumber,
-          remainingTimeInSeconds: 120,
+          remainingTimeInSeconds: 5,
           description: nextQuestion?.description,
           answers: nextQuestion?.answers.map((answer) => {
             return {

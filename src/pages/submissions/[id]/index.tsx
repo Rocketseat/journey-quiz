@@ -4,6 +4,8 @@ import { Check } from 'phosphor-react'
 import Link from 'next/link'
 import { trpc } from '../../../utils/trpc'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { Countdown } from '../../../components/Countdown'
 
 export default function Submission() {
   const router = useRouter()
@@ -23,7 +25,7 @@ export default function Submission() {
   return (
     <>
       <Head>
-        <title>Teste: ${submission?.quiz.title} | Rocketseat</title>
+        <title>Teste: {submission?.quiz.title} | Rocketseat</title>
       </Head>
 
       <div>
@@ -35,7 +37,7 @@ export default function Submission() {
               className="h-2 bg-violet-500"
               style={{
                 width: `${
-                  ((question?.currentQuestionNumber ?? 100) * 100) / 20
+                  ((question?.currentQuestionNumber ?? 0) * 100) / 20
                 }%`,
               }}
             />
@@ -57,9 +59,11 @@ export default function Submission() {
           </p>
           <p className="text-md align-right font-medium p-3">
             Tempo p/ resposta:
-            <span className="font-bold py-1 px-2 ml-1 bg-violet-500 text-white">
-              {question?.remainingTimeInSeconds}
-            </span>
+            {question?.remainingTimeInSeconds && (
+              <Countdown
+                remainingTimeInSeconds={question.remainingTimeInSeconds}
+              />
+            )}
           </p>
         </div>
       </div>
