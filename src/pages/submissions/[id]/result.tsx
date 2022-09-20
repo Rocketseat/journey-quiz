@@ -1,13 +1,29 @@
 import dynamic from 'next/dynamic'
 
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { BookOpen } from 'phosphor-react'
+import { trpc } from '../../../utils/trpc'
 
 const ResultChart = dynamic(() => import('../../../components/ResultChart'), {
   ssr: false,
 })
 
 export default function Results() {
+  const router = useRouter()
+  const submissionId = String(router.query.id)
+
+  const { data: result, isLoading: isLoadingResult } = trpc.useQuery([
+    'submission.result',
+    {
+      submissionId,
+    },
+  ])
+
+  if (!result?.score) {
+    return null
+  }
+
   return (
     <>
       <Head>
@@ -16,7 +32,7 @@ export default function Results() {
 
       <div className="mx-auto h-screen text-center flex flex-col items-stretch justify-center max-w-lg py-12 px-4">
         <div className="flex items-center justify-center flex-col">
-          <ResultChart />
+          <ResultChart score={result.score} />
         </div>
 
         <h1 className="text-3xl font-bold">

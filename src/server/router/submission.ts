@@ -47,6 +47,38 @@ export const submissionRouter = createRouter()
       return { submissionId }
     },
   })
+  .mutation('sendAnswer', {
+    input: z.object({
+      submissionQuestionAnswerId: z.string().cuid(),
+      answerId: z.string().cuid(),
+    }),
+    async resolve({ ctx, input }) {
+      const submissionQuestionAnswer =
+        await ctx.prisma.submissionQuestionAnswer.findUnique({
+          where: {
+            id: input.submissionQuestionAnswerId,
+          },
+        })
+
+      if (!submissionQuestionAnswer) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: "The question you're trying to answer doesn't exist.",
+        })
+      }
+
+      // TODO: Check date is still valid.
+
+      await ctx.prisma.submissionQuestionAnswer.update({
+        where: {
+          id: submissionQuestionAnswer.id,
+        },
+        data: {
+          answerId: input.answerId,
+        },
+      })
+    },
+  })
   .query('fetchQuestion', {
     input: z.object({
       submissionId: z.string().cuid(),
@@ -75,7 +107,7 @@ export const submissionRouter = createRouter()
 
       const alreadyAnsweredQuestionsIds = submission.questionAnswers.map(
         (question) => {
-          return question.id
+          return question.questionId
         },
       )
 
@@ -85,7 +117,7 @@ export const submissionRouter = createRouter()
         },
       )
 
-      const currentQuestionNumber = alreadyAnsweredQuestionsIds.length ?? 1
+      const currentQuestionNumber = alreadyAnsweredQuestionsIds.length || 1
 
       if (inProgressQuestion) {
         const currentQuestion = await ctx.prisma.question.findUnique({
@@ -102,6 +134,7 @@ export const submissionRouter = createRouter()
           currentQuestionNumber,
           remainingTimeInSeconds: 5,
           description: currentQuestion?.description,
+          submissionQuestionAnswerId: inProgressQuestion.id,
           answers: currentQuestion?.answers.map((answer) => {
             return {
               id: answer.id,
@@ -128,18 +161,20 @@ export const submissionRouter = createRouter()
           }
         }
 
-        await ctx.prisma.submissionQuestionAnswer.create({
-          data: {
-            submissionId: submission.id,
-            questionId: nextQuestion.id,
-          },
-        })
+        const submissionQuestionAnswer =
+          await ctx.prisma.submissionQuestionAnswer.create({
+            data: {
+              submissionId: submission.id,
+              questionId: nextQuestion.id,
+            },
+          })
 
         return {
           status: 'ongoing',
-          currentQuestionNumber,
+          currentQuestionNumber: currentQuestionNumber + 1,
           remainingTimeInSeconds: 5,
           description: nextQuestion?.description,
+          submissionQuestionAnswerId: submissionQuestionAnswer.id,
           answers: nextQuestion?.answers.map((answer) => {
             return {
               id: answer.id,
@@ -147,6 +182,41 @@ export const submissionRouter = createRouter()
             }
           }),
         }
+      }
+    },
+  })
+  .query('result', {
+    input: z.object({
+      submissionId: z.string().cuid(),
+    }),
+    async resolve({ ctx, input }) {
+      const submission = await ctx.prisma.submission.findUnique({
+        where: {
+          id: input.submissionId,
+        },
+        include: {
+          questionAnswers: {
+            include: {
+              question: true,
+              answer: true,
+            },
+          },
+        },
+      })
+
+      const score = submission?.questionAnswers.reduce(
+        (score, questionAnswer) => {
+          if (questionAnswer.answer?.isRightAnswer) {
+            return score + questionAnswer.question.score
+          } else {
+            return score
+          }
+        },
+        0,
+      )
+
+      return {
+        score,
       }
     },
   })
