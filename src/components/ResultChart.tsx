@@ -10,7 +10,7 @@ const options = {
       shade: 'dark',
       type: 'vertical',
       gradientToColors: [colors.violet['500']],
-      stops: [0, 300],
+      stops: [0, 200],
     },
   },
   labels: ['Resultado'],
@@ -21,7 +21,7 @@ interface ResultChartProps {
 }
 
 export default function ResultChart({ score }: ResultChartProps) {
-  const valueInPercent = (score * 100) / 300
+  const valueInPercent = (score * 100) / 200
 
   return (
     <Chart

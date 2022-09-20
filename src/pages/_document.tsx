@@ -14,6 +14,12 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
+
+        <link
+          rel="shortcut icon"
+          href="https://www.rocketseat.com.br/favicon.ico"
+          type="image/x-icon"
+        />
       </Head>
       <body className="bg-zinc-900 text-zinc-100">
         <Main />

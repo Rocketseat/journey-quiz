@@ -67,6 +67,7 @@ export const submissionRouter = createRouter()
         })
       }
 
+      // TODO: Disallow answering the same question twice
       // TODO: Check date is still valid.
 
       await ctx.prisma.submissionQuestionAnswer.update({
@@ -117,7 +118,7 @@ export const submissionRouter = createRouter()
         },
       )
 
-      const currentQuestionNumber = alreadyAnsweredQuestionsIds.length || 1
+      const currentQuestionNumber = alreadyAnsweredQuestionsIds.length
 
       if (inProgressQuestion) {
         const currentQuestion = await ctx.prisma.question.findUnique({
@@ -195,28 +196,52 @@ export const submissionRouter = createRouter()
           id: input.submissionId,
         },
         include: {
-          questionAnswers: {
+          quiz: true,
+        },
+      })
+
+      if (!submission) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Submission not found.',
+        })
+      }
+
+      let result = submission.result
+
+      if (!result) {
+        const questionAnswers =
+          await ctx.prisma.submissionQuestionAnswer.findMany({
+            where: {
+              submissionId: input.submissionId,
+            },
             include: {
               question: true,
               answer: true,
             },
-          },
-        },
-      })
+          })
 
-      const score = submission?.questionAnswers.reduce(
-        (score, questionAnswer) => {
+        result = questionAnswers.reduce((result, questionAnswer) => {
           if (questionAnswer.answer?.isRightAnswer) {
-            return score + questionAnswer.question.score
+            return result + questionAnswer.question.score
           } else {
-            return score
+            return result
           }
-        },
-        0,
-      )
+        }, 0)
+
+        await ctx.prisma.submission.update({
+          where: {
+            id: input.submissionId,
+          },
+          data: {
+            result,
+          },
+        })
+      }
 
       return {
-        score,
+        result,
+        quizTitle: submission.quiz.title,
       }
     },
   })
