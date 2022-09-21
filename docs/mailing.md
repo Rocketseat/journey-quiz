@@ -24,10 +24,10 @@ The mail body must have be the correct and wrong answers.
 
 ## Templating mail [ TODO ]
 - [-] Mail elements
-    - [ ] Branding
-        - [ ] Logo
-        - [ ] Greetings
-        - [ ] Regards
+    - [x] Branding
+        - [x] Logo
+        - [x] Greetings
+        - [x] Regards
     - [-] Give feedback page
         - [ ] Question (strong), answer (green for correct, red for wrong).
         - [ ] If wrong, show the corret one.

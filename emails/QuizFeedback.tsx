@@ -1,5 +1,4 @@
 import TextEmail from "./TextEmail";
-import ButtonPrimary from "./components/ButtonPrimary";
 
 interface GiveFeedbackProps {
   name: string

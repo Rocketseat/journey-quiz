@@ -13,7 +13,7 @@ const Header: React.FC<HeaderProps> = ({ big }) => {
           width={big ? "146px" : "91px"}
           height={big ? "32px" : "20px"}
           align="left"
-          src="https://s3.amazonaws.com/lab.campsh.com/mailing-logo%402x.png"
+          src="https://www.rocketseat.com.br/assets/logos/rocketseat.svg"
           cssClass="logo"
         />
       </MjmlColumn>

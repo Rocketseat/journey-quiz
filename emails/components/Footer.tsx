@@ -11,10 +11,7 @@ export default function Footer() {
           fontSize={textSm}
           color={grayDark}
         >
-          © 2022 Mailing&nbsp;&nbsp;·&nbsp;&nbsp;
-          <a href="#" target="_blank">
-            Unsubscribe
-          </a>
+          © {new Date().getFullYear()}
         </MjmlText>
       </MjmlColumn>
     </MjmlSection>

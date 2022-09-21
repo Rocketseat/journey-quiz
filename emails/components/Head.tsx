@@ -42,6 +42,9 @@ const Head: React.FC<HeadProps> = ({ children }) => {
         .dark-mode {
           display: none;
         }
+        .logo {
+          filter: brightness(10);
+        }
         @media (min-width:480px) {
           td.hero {
             padding-left: 24px !important;
