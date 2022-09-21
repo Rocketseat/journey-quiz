@@ -20,10 +20,15 @@ The mail body must have be the correct and wrong answers.
 - [x] test send mail with DefaultOptions
 - [x] Create AWS SES Transport
 - [ ] Test send mail with AWSSESOptions
+- [ ] Add Rockeseat default mail and name
 
 ## Templating mail [ TODO ]
-- [ ] Mail elements
-    - [ ] Feedback
+- [-] Mail elements
+    - [ ] Branding
+        - [ ] Logo
+        - [ ] Greetings
+        - [ ] Regards
+    - [-] Give feedback page
         - [ ] Question (strong), answer (green for correct, red for wrong).
         - [ ] If wrong, show the corret one.
-    - [ ] Link para completar o cadastro
+    - [-] Link para completar o cadastro

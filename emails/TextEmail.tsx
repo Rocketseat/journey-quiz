@@ -88,7 +88,7 @@ const TextEmail: React.FC<TextEmailProps> = ({
             >
               ♥,
               <br />
-              Mailing
+              Rocketseat
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
