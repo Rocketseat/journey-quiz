@@ -54,7 +54,8 @@ export default function Results() {
         </h1>
 
         <p className="text-md text-zinc-400 mt-2">
-          Seu nível está acima de <span className="font-bold">76%</span> de
+          Seu nível está acima de{' '}
+          <span className="font-bold">{result.betterThanPercentage}%</span> dos
           outros usuários
         </p>
 
@@ -74,7 +75,7 @@ export default function Results() {
               <Dialog.Title className="text-2xl font-bold">
                 Acessar relatório completo
               </Dialog.Title>
-              <Dialog.Description className="mt-3 text-zinc-300">
+              <Dialog.Description className="mt-2 text-zinc-300">
                 <p>Ao inserir seu e-mail, você:</p>
                 <ul className="list-disc list-inside mt-2 leading-relaxed">
                   <li>Recebe o gabarito do questionário;</li>
@@ -97,7 +98,7 @@ export default function Results() {
 
                 <button
                   type="submit"
-                  className="mt-3 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
+                  className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
                 >
                   <BookOpen className="w-5 h-5" />
                   Receber relatório

@@ -1,13 +1,16 @@
 import Head from 'next/head'
 import * as RadioGroup from '@radix-ui/react-radio-group'
-import { Check } from 'phosphor-react'
+import { ArrowRight, Check } from 'phosphor-react'
 import { trpc } from '../../../utils/trpc'
 import { useRouter } from 'next/router'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useCallback, useState } from 'react'
 import { Countdown } from '../../../components/Countdown'
+import * as Dialog from '@radix-ui/react-dialog'
+import { useQueryClient } from 'react-query'
 
 export default function Submission() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const submissionId = String(router.query.id)
 
   const [questionAnswerId, setQuestionAnswerId] = useState<string>()
@@ -50,6 +53,30 @@ export default function Submission() {
     await fetchAnotherQuestion()
   }
 
+  async function handleSendLateAnswer() {
+    if (!question?.submissionQuestionAnswerId) {
+      return
+    }
+
+    await sendAnswer({
+      submissionQuestionAnswerId: question.submissionQuestionAnswerId,
+    })
+
+    await fetchAnotherQuestion()
+  }
+
+  const onCountdownFinish = useCallback(() => {
+    queryClient.setQueryData(
+      ['submission.fetchQuestion', { submissionId }],
+      (data: any) => {
+        return {
+          ...data,
+          status: 'late',
+        }
+      },
+    )
+  }, [submissionId, queryClient])
+
   return (
     <>
       <Head>
@@ -87,11 +114,13 @@ export default function Submission() {
           </p>
           <p className="text-md align-right font-medium p-3">
             Tempo p/ resposta:
-            {question?.remainingTimeInSeconds && (
-              <Countdown
-                remainingTimeInSeconds={question.remainingTimeInSeconds}
-              />
-            )}
+            {question?.remainingTimeInSeconds !== undefined &&
+              question.remainingTimeInSeconds >= 0 && (
+                <Countdown
+                  remainingTimeInSeconds={question.remainingTimeInSeconds}
+                  onCountdownFinish={onCountdownFinish}
+                />
+              )}
           </p>
         </div>
       </div>
@@ -139,12 +168,39 @@ export default function Submission() {
 
           <button
             type="submit"
-            className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-3 bg-violet-600 text-base font-medium text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-3 bg-violet-600 text-base font-medium text-white hover:bg-violet-700 disabled:hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled={!questionAnswerId || question?.status === 'late'}
           >
             Confirmar resposta
           </button>
         </div>
       </form>
+
+      {question?.status === 'late' && (
+        <Dialog.Root open={true}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/60" />
+
+            <Dialog.Content className="bg-zinc-800 rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fixed p-6 w-full max-w-md">
+              <Dialog.Title className="text-2xl font-bold">
+                Tempo esgotado!
+              </Dialog.Title>
+              <Dialog.Description className="mt-2 text-zinc-300">
+                O tempo para responder essa pergunta esgotou...
+              </Dialog.Description>
+
+              <button
+                type="button"
+                onClick={handleSendLateAnswer}
+                className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
+              >
+                Pular pergunta
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      )}
     </>
   )
 }

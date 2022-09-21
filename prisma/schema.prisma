@@ -43,6 +43,7 @@ model Answer {
 model Submission {
   id        String   @id @default(cuid())
   userId    String?
+  sessionId String?
   quizId    String
   result    Int?
   createdAt DateTime @default(now())
@@ -57,9 +58,15 @@ model SubmissionQuestionAnswer {
   submissionId String
   questionId   String
   answerId     String?
+  answered     Boolean  @default(false)
   createdAt    DateTime @default(now())
 
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   question   Question   @relation(fields: [questionId], references: [id])
   answer     Answer?    @relation(fields: [answerId], references: [id])
+}
+
+model User {
+  id    String @id @default(cuid())
+  email String @unique
 }
