@@ -14,7 +14,7 @@ export function GiveFeedback({ name }: GiveFeedbackProps) {
           Parabéns por completar o Quiz.
         </>
       }
-      ctaText="Complete seu cadastro"
+      ctaText="Baixar o resultado em PDF"
     />
   );
 }
