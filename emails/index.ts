@@ -3,7 +3,7 @@ import { transport } from "./transports";
 
 const sendMail = buildSendMail({
   transport,
-  defaultFrom: "maykrbrito@gmail.com",
+  defaultFrom: "oi@rocketseat.com.br",
   configPath: "./mailing.config.json",
 });
 

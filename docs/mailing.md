@@ -20,7 +20,6 @@ The mail body must have be the correct and wrong answers.
 - [x] test send mail with DefaultOptions
 - [x] Create AWS SES Transport
 - [ ] Test send mail with AWSSESOptions
-- [ ] Add Rockeseat default mail and name
 
 ## Templating mail [ TODO ]
 - [-] Mail elements
@@ -28,6 +27,7 @@ The mail body must have be the correct and wrong answers.
         - [x] Logo
         - [x] Greetings
         - [x] Regards
+        - [x] Rockeseat default mail
     - [-] Give feedback page
         - [ ] Question (strong), answer (green for correct, red for wrong).
         - [ ] If wrong, show the corret one.

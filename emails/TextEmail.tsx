@@ -57,7 +57,7 @@ const TextEmail: React.FC<TextEmailProps> = ({
               lineHeight={leadingRelaxed}
               cssClass="paragraph"
             >
-              Hello {name},
+              Oi {name},
             </MjmlText>
             <MjmlText
               cssClass="paragraph"
