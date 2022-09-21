@@ -19,7 +19,7 @@ export function getColorBySecondsRemaining(seconds: number) {
 
 export function Countdown({
   remainingTimeInSeconds,
-  onCountdownFinish = () => {},
+  onCountdownFinish,
 }: CountdownProps) {
   const { start, secondsLeft } = useCountdown({
     onCountdownFinish,

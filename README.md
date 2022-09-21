@@ -8,3 +8,4 @@
 - [x] Show alert on front-end when time has ended
 - [ ] Deploy
 - [ ] Split quiz on more components
+- [ ] Only one email per test

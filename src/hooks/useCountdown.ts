@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 let interval: NodeJS.Timer
 
 interface CountdownParams {
-  onCountdownFinish: () => void
+  onCountdownFinish?: () => void
 }
 
 export function useCountdown({ onCountdownFinish }: CountdownParams) {
@@ -39,7 +39,10 @@ export function useCountdown({ onCountdownFinish }: CountdownParams) {
   useEffect(() => {
     if (secondsLeft === 0) {
       clearInterval(interval)
-      onCountdownFinish()
+
+      if (onCountdownFinish) {
+        onCountdownFinish()
+      }
     }
   }, [secondsLeft, onCountdownFinish])
 

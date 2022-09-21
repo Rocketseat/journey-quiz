@@ -85,7 +85,7 @@ export default function Results() {
               </Dialog.Description>
 
               <form
-                onSubmit={() => {}}
+                // onSubmit={() => {}}
                 className="pt-4 mt-4 border-t border-t-zinc-700"
               >
                 <input
