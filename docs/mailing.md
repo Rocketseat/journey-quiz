@@ -19,4 +19,11 @@ The mail body must have be the correct and wrong answers.
 - [x] Configure env vars
 - [x] test send mail with DefaultOptions
 - [x] Create AWS SES Transport
-- [] test send mail with AWSSESOptions
+- [ ] Test send mail with AWSSESOptions
+
+## Templating mail [ TODO ]
+- [ ] Mail elements
+    - [ ] Feedback
+        - [ ] Question (strong), answer (green for correct, red for wrong).
+        - [ ] If wrong, show the corret one.
+    - [ ] Link para completar o cadastro

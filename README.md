@@ -1,45 +1,10 @@
-## Installation
+# Todo
 
-```sh
-npm i
-npx prisma migrate dev
-npm run dev
-```
-
-# Quiz
-
-id
-title
-description
-
-# Question
-
-id
-quizId
-description
-score # 5 / 15 / 25
-
-# Answer
-
-id
-questionId
-description
-isRightAnswer Boolean
-
-# Submission
-
-id
-userId
-quizId
-result
-createdAt
-
-# SubmissionQuestionAnswer
-
-## We create this as soon as the question appears to the user during the quiz
-
-id
-submissionId
-questionId
-answerId # NULLABLE as the time can expire and the answer will be null
-createdAt # Used to expire question timer
+- [ ] Mail with full report
+- [ ] Share on social with embed
+- [ ] SSR / Static pages
+- [ ] Error handling on front end
+- [ ] Loading states
+- [x] Show alert on front-end when time has ended
+- [ ] Deploy
+- [ ] Split quiz on more components

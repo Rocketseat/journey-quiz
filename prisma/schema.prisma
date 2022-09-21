@@ -24,7 +24,7 @@ model Question {
   score       Int
 
   answers Answer[]
-  quiz    Quiz     @relation(fields: [quizId], references: [id])
+  quiz    Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   submissionQuestionAnswers SubmissionQuestionAnswer[]
 }
@@ -35,7 +35,7 @@ model Answer {
   description   String
   isRightAnswer Boolean @default(false)
 
-  question Question @relation(fields: [questionId], references: [id])
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   submissionQuestionAnswers SubmissionQuestionAnswer[]
 }
@@ -43,11 +43,12 @@ model Answer {
 model Submission {
   id        String   @id @default(cuid())
   userId    String?
+  sessionId String?
   quizId    String
   result    Int?
   createdAt DateTime @default(now())
 
-  quiz Quiz @relation(fields: [quizId], references: [id])
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   questionAnswers SubmissionQuestionAnswer[]
 }
@@ -57,9 +58,15 @@ model SubmissionQuestionAnswer {
   submissionId String
   questionId   String
   answerId     String?
+  answered     Boolean  @default(false)
   createdAt    DateTime @default(now())
 
-  submission Submission @relation(fields: [submissionId], references: [id])
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   question   Question   @relation(fields: [questionId], references: [id])
   answer     Answer?    @relation(fields: [answerId], references: [id])
+}
+
+model User {
+  id    String @id @default(cuid())
+  email String @unique
 }

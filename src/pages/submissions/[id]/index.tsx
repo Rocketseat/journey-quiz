@@ -1,26 +1,81 @@
 import Head from 'next/head'
 import * as RadioGroup from '@radix-ui/react-radio-group'
-import { Check } from 'phosphor-react'
-import Link from 'next/link'
+import { ArrowRight, Check } from 'phosphor-react'
 import { trpc } from '../../../utils/trpc'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { FormEvent, useCallback, useState } from 'react'
 import { Countdown } from '../../../components/Countdown'
+import * as Dialog from '@radix-ui/react-dialog'
+import { useQueryClient } from 'react-query'
 
 export default function Submission() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const submissionId = String(router.query.id)
 
-  const { data: submission, isLoading: isLoadingSubmision } = trpc.useQuery([
-    'submission.get',
-    { submissionId },
-  ])
+  const [questionAnswerId, setQuestionAnswerId] = useState<string>()
+
+  const { data: submission, isLoading: isLoadingSubmision } = trpc.useQuery(
+    ['submission.get', { submissionId }],
+    {
+      refetchOnWindowFocus: false,
+    },
+  )
 
   const {
     data: question,
     isLoading: isLoadingQuestion,
     refetch: fetchAnotherQuestion,
-  } = trpc.useQuery(['submission.fetchQuestion', { submissionId }])
+  } = trpc.useQuery(['submission.fetchQuestion', { submissionId }], {
+    onSuccess(data) {
+      if (data.status === 'finished') {
+        router.push(`/submissions/${submissionId}/result`)
+      }
+    },
+    refetchOnWindowFocus: false,
+  })
+
+  const { mutateAsync: sendAnswer, isLoading: isSendingAnswer } =
+    trpc.useMutation('submission.sendAnswer')
+
+  async function handleSendAnswer(event: FormEvent) {
+    event.preventDefault()
+
+    if (!questionAnswerId || !question?.submissionQuestionAnswerId) {
+      return
+    }
+
+    await sendAnswer({
+      submissionQuestionAnswerId: question.submissionQuestionAnswerId,
+      answerId: questionAnswerId,
+    })
+
+    await fetchAnotherQuestion()
+  }
+
+  async function handleSendLateAnswer() {
+    if (!question?.submissionQuestionAnswerId) {
+      return
+    }
+
+    await sendAnswer({
+      submissionQuestionAnswerId: question.submissionQuestionAnswerId,
+    })
+
+    await fetchAnotherQuestion()
+  }
+
+  const onCountdownFinish = useCallback(() => {
+    queryClient.setQueryData(
+      ['submission.fetchQuestion', { submissionId }],
+      (data: any) => {
+        return {
+          ...data,
+          status: 'late',
+        }
+      },
+    )
+  }, [submissionId, queryClient])
 
   return (
     <>
@@ -59,61 +114,93 @@ export default function Submission() {
           </p>
           <p className="text-md align-right font-medium p-3">
             Tempo p/ resposta:
-            {question?.remainingTimeInSeconds && (
-              <Countdown
-                remainingTimeInSeconds={question.remainingTimeInSeconds}
-              />
-            )}
+            {question?.remainingTimeInSeconds !== undefined &&
+              question.remainingTimeInSeconds >= 0 && (
+                <Countdown
+                  remainingTimeInSeconds={question.remainingTimeInSeconds}
+                  onCountdownFinish={onCountdownFinish}
+                />
+              )}
           </p>
         </div>
       </div>
 
-      <div className="mx-auto max-w-4xl py-4 px-6">
-        <div className="mt-4">
-          <h2 className="text-2xl font-bold">
-            Questão {question?.currentQuestionNumber}
-          </h2>
-          <p className="text-lg leading-8 mt-4">{question?.description}</p>
+      <form
+        className="mx-auto max-w-4xl py-4 px-6 mt-4"
+        onSubmit={handleSendAnswer}
+      >
+        <h2 className="text-2xl font-bold">
+          Questão {question?.currentQuestionNumber}
+        </h2>
+        <p className="text-lg leading-8 mt-4">{question?.description}</p>
 
-          <RadioGroup.Root className="mt-6 space-y-4">
-            {question?.answers?.map((answer) => {
-              return (
-                <RadioGroup.Item
-                  key={answer.id}
-                  value={answer.id}
-                  className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
-                >
-                  <span className="font-medium text-zinc-300">
-                    {answer.description}
-                  </span>
-
-                  <RadioGroup.Indicator>
-                    <Check className="w-5 h-5 ml-auto text-violet-500" />
-                  </RadioGroup.Indicator>
-                </RadioGroup.Item>
-              )
-            })}
-          </RadioGroup.Root>
-
-          <div className="mt-6 grid grid-cols-2 md:flex md:flex-row md:justify-end">
-            <button
-              type="button"
-              className="inline-flex mr-4 justify-center rounded-md shadow-sm px-8 py-3 bg-zinc-700 text-base font-medium text-zinc-300 hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            >
-              Desistir
-            </button>
-
-            <Link href="/submissions/1/result">
-              <a
-                type="button"
-                className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-3 bg-violet-600 text-base font-medium text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        <RadioGroup.Root
+          className="mt-6 space-y-4"
+          onValueChange={setQuestionAnswerId}
+          value={questionAnswerId}
+        >
+          {question?.answers?.map((answer) => {
+            return (
+              <RadioGroup.Item
+                key={answer.id}
+                value={answer.id}
+                className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
               >
-                Confirmar resposta
-              </a>
-            </Link>
-          </div>
+                <span className="font-medium text-zinc-300">
+                  {answer.description}
+                </span>
+
+                <RadioGroup.Indicator>
+                  <Check className="w-5 h-5 ml-auto text-violet-500" />
+                </RadioGroup.Indicator>
+              </RadioGroup.Item>
+            )
+          })}
+        </RadioGroup.Root>
+
+        <div className="mt-6 grid grid-cols-2 md:flex md:flex-row md:justify-end">
+          <button
+            type="button"
+            className="inline-flex mr-4 justify-center rounded-md shadow-sm px-8 py-3 bg-zinc-700 text-base font-medium text-zinc-300 hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          >
+            Desistir
+          </button>
+
+          <button
+            type="submit"
+            className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-3 bg-violet-600 text-base font-medium text-white hover:bg-violet-700 disabled:hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled={!questionAnswerId || question?.status === 'late'}
+          >
+            Confirmar resposta
+          </button>
         </div>
-      </div>
+      </form>
+
+      {question?.status === 'late' && (
+        <Dialog.Root open={true}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/60" />
+
+            <Dialog.Content className="bg-zinc-800 rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fixed p-6 w-full max-w-md">
+              <Dialog.Title className="text-2xl font-bold">
+                Tempo esgotado!
+              </Dialog.Title>
+              <Dialog.Description className="mt-2 text-zinc-300">
+                O tempo para responder essa pergunta esgotou...
+              </Dialog.Description>
+
+              <button
+                type="button"
+                onClick={handleSendLateAnswer}
+                className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
+              >
+                Pular pergunta
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      )}
     </>
   )
 }
