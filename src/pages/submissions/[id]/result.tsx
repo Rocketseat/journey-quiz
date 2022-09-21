@@ -110,7 +110,7 @@ export default function Results() {
           </Dialog.Portal>
         </Dialog.Root>
 
-        <div className="relative my-6 mx-12">
+        {/* <div className="relative my-6 mx-12">
           <div
             className="absolute inset-0 flex items-center"
             aria-hidden="true"
@@ -122,7 +122,7 @@ export default function Results() {
               Compartilhe
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* <div className="inline space-x-4 text-md text-gray-500">
           <a href="#" className="text-zinc-400 hover:text-violet-300">
