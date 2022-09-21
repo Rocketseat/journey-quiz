@@ -1,17 +1,15 @@
+import { withTRPC } from '@trpc/next'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
-import { withTRPC } from '@trpc/next'
-import type { AppType } from 'next/dist/shared/lib/utils'
 import superjson from 'superjson'
+
+import type { AppProps } from 'next/app'
 import type { AppRouter } from '../server/router'
+
 import '../styles/globals.css'
 
-const MyApp: AppType = ({ Component, pageProps }) => {
-  return (
-    <div id="portal-root">
-      <Component {...pageProps} />
-    </div>
-  )
+function App({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
 }
 
 const getBaseUrl = () => {
@@ -38,10 +36,12 @@ export default withTRPC<AppRouter>({
       transformer: superjson,
       queryClientConfig: {
         defaultOptions: {
-          queries: { staleTime: Infinity },
+          queries: {
+            staleTime: Infinity,
+          },
         },
       },
     }
   },
   ssr: false,
-})(MyApp)
+})(App)

@@ -1,19 +1,12 @@
-import dynamic from 'next/dynamic'
-
 import Head from 'next/head'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import {
-  BookOpen,
-  FacebookLogo,
-  InstagramLogo,
-  TwitterLogo,
-} from 'phosphor-react'
+import { BookOpen } from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 
-import { trpc } from '../../../utils/trpc'
-import { GetServerSideProps } from 'next'
-import { trpcSSG } from '../../../server/trpc-ssg'
-import ResultChart from '../../../components/ResultChart'
+import { trpc } from '~/utils/trpc'
+import { trpcSSG } from '~/server/trpc-ssg'
+import ResultChart from '~/components/ResultChart'
 
 function getLevelFromResult(result: number) {
   if (result >= 200) {
@@ -131,7 +124,7 @@ export default function Results() {
           </div>
         </div>
 
-        <div className="inline space-x-4 text-md text-gray-500">
+        {/* <div className="inline space-x-4 text-md text-gray-500">
           <a href="#" className="text-zinc-400 hover:text-violet-300">
             <span className="sr-only">Facebook</span>
             <FacebookLogo className="h-6 w-6 inline" />
@@ -144,7 +137,7 @@ export default function Results() {
             <span className="sr-only">Twitter</span>
             <TwitterLogo className="h-6 w-6 inline" />
           </a>
-        </div>
+        </div> */}
       </div>
     </>
   )

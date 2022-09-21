@@ -21,7 +21,6 @@ export default function ResultChart({ score }: ResultChartProps) {
         innerRadius={80}
         cornerRadius={40}
         padAngle={() => 5}
-        labels={() => null}
         style={{
           data: {
             fill: ({ datum }) => {

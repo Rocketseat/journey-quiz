@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { GetServerSideProps } from 'next'
 import { FormEvent, useCallback, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { useRouter } from 'next/router'
@@ -6,10 +7,9 @@ import { ArrowRight, Check, Spinner } from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as RadioGroup from '@radix-ui/react-radio-group'
 
-import { trpc } from '../../../utils/trpc'
-import { Countdown } from '../../../components/Countdown'
-import { GetServerSideProps } from 'next'
-import { trpcSSG } from '../../../server/trpc-ssg'
+import { trpc } from '~/utils/trpc'
+import { Countdown } from '~/components/Countdown'
+import { trpcSSG } from '~/server/trpc-ssg'
 
 export default function Submission() {
   const router = useRouter()
