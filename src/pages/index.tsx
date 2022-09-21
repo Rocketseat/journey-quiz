@@ -22,6 +22,7 @@ const Home: NextPage = () => {
         <h2 className="text-xl font-medium mt-6">
           Qual teste você quer realizar?
         </h2>
+
         <p className="mt-1 text-sm text-zinc-400">
           Inicie escolhendo um dos testes da lista abaixo
         </p>

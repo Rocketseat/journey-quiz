@@ -7,12 +7,17 @@ import type { AppRouter } from '../server/router'
 import '../styles/globals.css'
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />
+  return (
+    <div id="portal-root">
+      <Component {...pageProps} />
+    </div>
+  )
 }
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') return ''
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+
   return `http://localhost:${process.env.PORT ?? 3000}`
 }
 
@@ -32,7 +37,9 @@ export default withTRPC<AppRouter>({
       url,
       transformer: superjson,
       queryClientConfig: {
-        defaultOptions: { queries: { staleTime: Infinity } },
+        defaultOptions: {
+          queries: { staleTime: Infinity },
+        },
       },
     }
   },
