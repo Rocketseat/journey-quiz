@@ -25,6 +25,7 @@ type TextEmailProps = {
   body: ReactElement;
   bulletedList?: ReactElement;
   ctaText?: string;
+  ctaLink?: string;
 };
 
 const TextEmail: React.FC<TextEmailProps> = ({
@@ -33,6 +34,7 @@ const TextEmail: React.FC<TextEmailProps> = ({
   body,
   bulletedList,
   ctaText,
+  ctaLink
 }) => {
   return (
     <Mjml>
@@ -57,7 +59,7 @@ const TextEmail: React.FC<TextEmailProps> = ({
               lineHeight={leadingRelaxed}
               cssClass="paragraph"
             >
-              Oi {name},
+              🎉 Parabéns, <strong>{name}</strong>!
             </MjmlText>
             <MjmlText
               cssClass="paragraph"
@@ -76,7 +78,7 @@ const TextEmail: React.FC<TextEmailProps> = ({
             {ctaText && (
               <>
                 <MjmlSpacer height="24px" />
-                <ButtonPrimary link={"#"} uiText={ctaText} />
+                <ButtonPrimary link={ctaLink ? ctaLink : "#"} uiText={ctaText} />
                 <MjmlSpacer height="8px" />
               </>
             )}

@@ -11,10 +11,11 @@ export function GiveFeedback({ name }: GiveFeedbackProps) {
       name={name}
       body={
         <>
-          Parabéns por completar o Quiz.
+          Você completou o quiz e seu resultado está pronto!
         </>
       }
       ctaText="Baixar o resultado em PDF"
+      ctaLink="#"
     />
   );
 }

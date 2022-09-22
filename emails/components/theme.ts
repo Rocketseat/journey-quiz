@@ -2,6 +2,7 @@
 export const black = "#000";
 export const grayDark = "#888";
 export const grayLight = "#f5f5f5";
+export const purple = "#8257e6";
 
 // Typography
 export const textSm = 14;
