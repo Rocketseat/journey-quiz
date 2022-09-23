@@ -1,20 +1,19 @@
 import type { GetStaticProps, NextPage } from 'next'
-import Head from 'next/head'
 import Image from 'next/image'
 
 import { trpc } from '../utils/trpc'
-import rocketseatLogoImg from '../assets/logo-rocketseat.svg'
 import { QuizItem } from '../components/QuizItem'
 import { trpcSSG } from '../server/trpc-ssg'
+import { NextSeo } from 'next-seo'
+
+import rocketseatLogoImg from '../assets/logo-rocketseat.svg'
 
 const Home: NextPage = () => {
   const { data: quizzes } = trpc.useQuery(['quiz.getAll'])
 
   return (
     <>
-      <Head>
-        <title>Teste seus conhecimentos | Rocketseat</title>
-      </Head>
+      <NextSeo title="Teste seus conhecimentos em programação" />
 
       <main className="max-w-xl mx-auto py-16 px-8">
         <Image src={rocketseatLogoImg} alt="" />

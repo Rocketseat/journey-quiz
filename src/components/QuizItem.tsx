@@ -1,25 +1,17 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { CaretRight, Spinner } from 'phosphor-react'
-import { trpc } from '../utils/trpc'
+import { CaretRight } from 'phosphor-react'
 
 interface QuizProps {
   quiz: {
     id: string
     title: string
     description: string
+    slug: string
   }
 }
 
 export function QuizItem({ quiz }: QuizProps) {
-  const router = useRouter()
-
-  const { mutateAsync: startSubmission, isLoading: isStartingSubmission } =
-    trpc.useMutation(['submission.start'], {
-      onSuccess(data) {
-        router.push(`/submissions/${data.submissionId}`)
-      },
-    })
-
   return (
     <li key={quiz.id}>
       <div className="relative group py-4 flex items-start gap-4">
@@ -40,27 +32,17 @@ export function QuizItem({ quiz }: QuizProps) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="group-hover:text-violet-400 font-medium">
-            <button
-              onClick={() => startSubmission({ quizId: quiz.id })}
-              className="font-medium"
-            >
+            <Link href={`/quizzes/${quiz.slug}`}>
               <a className="font-medium">
                 <span className="absolute inset-0" aria-hidden="true" />
                 {quiz.title}
               </a>
-            </button>
+            </Link>
           </div>
           <p className="text-sm text-zinc-400 mt-1">{quiz.description}</p>
         </div>
         <div className="flex-shrink-0 self-center">
-          {isStartingSubmission ? (
-            <Spinner
-              className="h-5 w-5 text-zinc-400 animate-spin"
-              aria-hidden="true"
-            />
-          ) : (
-            <CaretRight className="h-5 w-5 text-zinc-400" aria-hidden="true" />
-          )}
+          <CaretRight className="h-5 w-5 text-zinc-400" aria-hidden="true" />
         </div>
       </div>
     </li>

@@ -10,6 +10,7 @@ async function main() {
       title: 'Fundamentos da Web',
       description: 'Quiz sobre fundamentos da web',
       imageUrl: 'javascript.svg',
+      slug: 'fundamentos-da-web',
     },
   })
 

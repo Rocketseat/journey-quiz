@@ -7,16 +7,16 @@ import type { AppProps } from 'next/app'
 import type { AppRouter } from '../server/router'
 
 import '../styles/globals.css'
+import { getBaseUrl } from '~/utils/get-base-url'
+import { DefaultSeo } from 'next-seo'
 
 function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
-
-const getBaseUrl = () => {
-  if (typeof window !== 'undefined') return ''
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-
-  return `http://localhost:${process.env.PORT ?? 3000}`
+  return (
+    <>
+      <DefaultSeo titleTemplate="%s | Rocketseat" />
+      <Component {...pageProps} />
+    </>
+  )
 }
 
 export default withTRPC<AppRouter>({

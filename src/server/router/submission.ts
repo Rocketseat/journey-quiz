@@ -350,7 +350,7 @@ export const submissionRouter = createRouter()
 
       return {
         result,
-        quizTitle: submission.quiz.title,
+        quiz: submission.quiz,
         betterThanPercentage,
       }
     },

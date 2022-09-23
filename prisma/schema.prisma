@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -12,6 +12,7 @@ model Quiz {
   title       String
   description String
   imageUrl    String
+  slug        String @unique
 
   questions   Question[]
   submissions Submission[]
