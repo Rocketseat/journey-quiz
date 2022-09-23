@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import { FormEvent, useCallback, useState } from 'react'
 import { useQueryClient } from 'react-query'

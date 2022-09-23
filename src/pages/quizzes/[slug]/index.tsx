@@ -1,10 +1,10 @@
-import { GetServerSideProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 
 import { trpc } from '~/utils/trpc'
 import { trpcSSG } from '~/server/trpc-ssg'
-import { ArrowRight, ClockAfternoon, FileJs, ListBullets } from 'phosphor-react'
+import { ArrowRight, ClockAfternoon, ListBullets } from 'phosphor-react'
 
 import rocketseatLogoImg from '~/assets/logo-rocketseat.svg'
 import Image from 'next/image'
@@ -88,7 +88,14 @@ export default function Quiz() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string
 
   await trpcSSG.prefetchQuery('quiz.get', { slug })

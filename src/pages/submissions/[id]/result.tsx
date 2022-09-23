@@ -1,14 +1,7 @@
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
-import {
-  BookOpen,
-  Check,
-  FacebookLogo,
-  InstagramLogo,
-  LinkedinLogo,
-  TwitterLogo,
-} from 'phosphor-react'
+import { BookOpen, Check, LinkedinLogo, TwitterLogo } from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 
 import { trpc } from '~/utils/trpc'
