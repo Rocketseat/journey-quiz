@@ -9,6 +9,9 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      backgroundImage: {
+        'result-chart': 'conic-gradient(red 70%, #0000 0)',
+      },
     },
   },
   plugins: [

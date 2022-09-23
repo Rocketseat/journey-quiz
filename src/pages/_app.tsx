@@ -1,18 +1,21 @@
+import { withTRPC } from '@trpc/next'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
-import { withTRPC } from '@trpc/next'
-import type { AppType } from 'next/dist/shared/lib/utils'
 import superjson from 'superjson'
+
+import type { AppProps } from 'next/app'
 import type { AppRouter } from '../server/router'
+
 import '../styles/globals.css'
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+function App({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
 }
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') return ''
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+
   return `http://localhost:${process.env.PORT ?? 3000}`
 }
 
@@ -31,8 +34,14 @@ export default withTRPC<AppRouter>({
       ],
       url,
       transformer: superjson,
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            staleTime: Infinity,
+          },
+        },
+      },
     }
   },
   ssr: false,
-})(MyApp)
+})(App)

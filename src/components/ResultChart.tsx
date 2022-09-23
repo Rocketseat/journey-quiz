@@ -1,20 +1,5 @@
 import colors from 'tailwindcss/colors'
-
-import Chart from 'react-apexcharts'
-
-const options = {
-  fill: {
-    type: 'gradient',
-    colors: [colors.purple['500']],
-    gradient: {
-      shade: 'dark',
-      type: 'vertical',
-      gradientToColors: [colors.violet['500']],
-      stops: [0, 200],
-    },
-  },
-  labels: ['Resultado'],
-}
+import { VictoryPie, VictoryLabel } from 'victory'
 
 interface ResultChartProps {
   score: number
@@ -24,40 +9,36 @@ export default function ResultChart({ score }: ResultChartProps) {
   const valueInPercent = (score * 100) / 200
 
   return (
-    <Chart
-      options={{
-        plotOptions: {
-          radialBar: {
-            track: {
-              background: colors.zinc['700'],
-            },
-            hollow: {
-              margin: 0,
-              size: '70%',
-              background: colors.gray['800'],
-            },
-            dataLabels: {
-              name: {
-                offsetY: -20,
-                color: '#fff',
-                fontSize: '20px',
-                fontWeight: 'normal',
-              },
-              value: {
-                color: '#fff',
-                fontSize: '48px',
-                show: true,
-                formatter: () => String(score),
-              },
+    <svg viewBox="0 0 300 300" width={300} height={300}>
+      <VictoryPie
+        standalone={false}
+        width={300}
+        height={300}
+        data={[
+          { x: 1, y: valueInPercent },
+          { x: 2, y: 100 - valueInPercent },
+        ]}
+        innerRadius={80}
+        cornerRadius={40}
+        padAngle={() => 5}
+        style={{
+          data: {
+            fill: ({ datum }) => {
+              const color = datum.y > 30 ? colors.violet[500] : 'red'
+
+              return datum.x === 1 ? color : colors.zinc[800]
             },
           },
-        },
-        fill: options.fill,
-        labels: options.labels,
-      }}
-      series={[valueInPercent]}
-      type="radialBar"
-      width="400"
-    />
+        }}
+      />
+      <VictoryLabel
+        textAnchor="middle"
+        verticalAnchor="middle"
+        x={150}
+        y={150}
+        text={score}
+        style={{ fontSize: 64, fill: colors.zinc[100] }}
+      />
+    </svg>
   )
 }
