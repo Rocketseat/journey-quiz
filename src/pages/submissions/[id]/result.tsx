@@ -1,12 +1,13 @@
-import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { BookOpen } from 'phosphor-react'
+import { NextSeo } from 'next-seo'
+import { BookOpen, Check, LinkedinLogo, TwitterLogo } from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 
 import { trpc } from '~/utils/trpc'
 import { trpcSSG } from '~/server/trpc-ssg'
 import ResultChart from '~/components/ResultChart'
+import { getBaseUrl } from '~/utils/get-base-url'
 
 function getLevelFromResult(result: number) {
   if (result >= 200) {
@@ -33,11 +34,15 @@ export default function Results() {
 
   const level = getLevelFromResult(result.result)
 
+  const shareMessage = encodeURIComponent(
+    `Acabei de completar o quiz de ${result.quiz.title} da Rocketseat com um nível ${level}. Clique aqui para testar seus conhecimentos!`,
+  )
+
+  const shareUrl = `${getBaseUrl()}/quizzes/${result.quiz.slug}`
+
   return (
     <>
-      <Head>
-        <title>{`Resultado: ${result.quizTitle} | Rocketseat`}</title>
-      </Head>
+      <NextSeo title={`Resultado: ${result.quiz.title}`} />
 
       <div className="mx-auto h-screen text-center flex flex-col items-stretch justify-center max-w-lg py-6 px-4">
         <div className="flex items-center justify-center flex-col">
@@ -45,7 +50,7 @@ export default function Results() {
         </div>
 
         <h1 className="text-2xl font-bold">
-          {result.quizTitle}: <span className="text-emerald-500">{level}</span>
+          {result.quiz.title}: <span className="text-emerald-500">{level}</span>
         </h1>
 
         <p className="text-md text-zinc-400 mt-2">
@@ -59,7 +64,7 @@ export default function Results() {
             type="button"
             className="mt-6 inline-flex gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
           >
-            <BookOpen className="w-5 h-5" />
+            <BookOpen className="w-5 h-5" weight="bold" />
             Visualizar relatório completo
           </Dialog.Trigger>
 
@@ -68,14 +73,22 @@ export default function Results() {
 
             <Dialog.Content className="bg-zinc-800 rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fixed p-6 w-full max-w-sm">
               <Dialog.Title className="text-2xl font-bold">
-                Acessar relatório completo
+                Deixe seu e-mail e...
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-zinc-300">
-                <p>Ao inserir seu e-mail, você:</p>
-                <ul className="list-disc list-inside mt-2 leading-relaxed">
-                  <li>Recebe o gabarito do questionário;</li>
-                  <li>Salva seu progresso para o futuro;</li>
-                  <li>Recebe dicas para melhorar suas skills.</li>
+                <ul className="mt-2 leading-relaxed">
+                  <li className="inline-flex gap-2 items-center">
+                    <Check className="w-4 h-4 text-emerald-300" />
+                    Receba o gabarito do questionário;
+                  </li>
+                  <li className="inline-flex gap-2 items-center">
+                    <Check className="w-4 h-4 text-emerald-300" />
+                    Salve seu progresso para o futuro;
+                  </li>
+                  <li className="inline-flex gap-2 items-center">
+                    <Check className="w-4 h-4 text-emerald-300" />
+                    Receba dicas para melhorar suas skills.
+                  </li>
                 </ul>
               </Dialog.Description>
 
@@ -95,7 +108,7 @@ export default function Results() {
                   type="submit"
                   className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
                 >
-                  <BookOpen className="w-5 h-5" />
+                  <BookOpen className="w-5 h-5" weight="bold" />
                   Receber relatório
                 </button>
 
@@ -110,34 +123,36 @@ export default function Results() {
           </Dialog.Portal>
         </Dialog.Root>
 
-        {/* <div className="relative my-6 mx-12">
+        <div className="relative my-6 mx-12">
           <div
             className="absolute inset-0 flex items-center"
             aria-hidden="true"
           >
-            <div className="w-full border-t border-zinc-500" />
+            <div className="w-full border-t border-zinc-700" />
           </div>
           <div className="relative flex justify-center">
             <span className="px-4 bg-zinc-900 text-sm text-zinc-500">
               Compartilhe
             </span>
           </div>
-        </div> */}
+        </div>
 
-        {/* <div className="inline space-x-4 text-md text-gray-500">
-          <a href="#" className="text-zinc-400 hover:text-violet-300">
-            <span className="sr-only">Facebook</span>
-            <FacebookLogo className="h-6 w-6 inline" />
-          </a>
-          <a href="#" className="text-zinc-400 hover:text-violet-300">
+        <div className="inline space-x-4 text-md text-gray-500">
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+            className="text-zinc-400 hover:text-violet-300"
+          >
             <span className="sr-only">Instagram</span>
-            <InstagramLogo className="h-6 w-6 inline" />
+            <LinkedinLogo className="h-6 w-6 inline" />
           </a>
-          <a href="#" className="text-zinc-400 hover:text-violet-300">
+          <a
+            href={`http://twitter.com/share?text=${shareMessage}&url=${shareUrl}`}
+            className="text-zinc-400 hover:text-violet-300"
+          >
             <span className="sr-only">Twitter</span>
             <TwitterLogo className="h-6 w-6 inline" />
           </a>
-        </div> */}
+        </div>
       </div>
     </>
   )

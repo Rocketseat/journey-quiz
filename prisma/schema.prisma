@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 model Quiz {
@@ -12,6 +14,7 @@ model Quiz {
   title       String
   description String
   imageUrl    String
+  slug        String @unique
 
   questions   Question[]
   submissions Submission[]
