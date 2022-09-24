@@ -19,7 +19,7 @@ The mail body must have be the correct and wrong answers.
 - [x] Configure env vars
 - [x] test send mail with DefaultOptions
 - [x] Create AWS SES Transport
-- [ ] Test send mail with AWSSESOptions
+- [x] Test send mail with AWSSESOptions
 
 ## Templating mail [ TODO ]
 - [-] Mail elements
@@ -28,7 +28,4 @@ The mail body must have be the correct and wrong answers.
         - [x] Greetings
         - [x] Regards
         - [x] Rockeseat default mail
-    - [-] Give feedback page
-        - [ ] Question (strong), answer (green for correct, red for wrong).
-        - [ ] If wrong, show the corret one.
     - [-] Link para completar o cadastro
