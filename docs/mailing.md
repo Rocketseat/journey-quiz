@@ -29,3 +29,6 @@ The mail body must have be the correct and wrong answers.
         - [x] Regards
         - [x] Rockeseat default mail
     - [-] Link para completar o cadastro
+    - [-] Webminar invitation
+        - [x] Copywrite (Tks Tuti)
+        - [-] Link

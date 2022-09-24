@@ -5,20 +5,24 @@ import { leadingTight, textBase, borderBase } from "./theme";
 type ButtonPrimaryProps = {
   link: string;
   uiText: string;
+  height?: number;
+  backgroundColor?: string;
 };
 
-const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({ link, uiText }) => {
+const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({ link, uiText, height, backgroundColor }) => {
   return (
     <>
       <MjmlButton
         lineHeight={leadingTight}
         fontSize={textBase}
-        height={52}
+        height={height || 52}
         padding="0"
         align="left"
         href={link}
         backgroundColor={black}
         borderRadius={borderBase}
+        textTransform="uppercase"
+        fontWeight={700}
         cssClass="light-mode"
       >
         {uiText}
@@ -26,12 +30,14 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({ link, uiText }) => {
       <MjmlButton
         lineHeight={leadingTight}
         fontSize={textSm}
-        height={24}
+        height={height || 52}
         padding="0"
         align="left"
         href={link}
-        backgroundColor={purple}
+        backgroundColor={backgroundColor || purple}
         borderRadius={borderBase}
+        textTransform="uppercase"
+        fontWeight={700}
         cssClass="dark-mode"
       >
         {uiText}
