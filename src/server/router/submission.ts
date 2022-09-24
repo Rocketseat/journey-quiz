@@ -411,3 +411,64 @@ export const submissionRouter = createRouter()
       // TODO: Send email
     },
   })
+  .query('report', {
+    input: z.object({
+      submissionId: z.string().cuid(),
+    }),
+    async resolve({ ctx, input }) {
+      const submission = await ctx.prisma.submission.findUnique({
+        where: {
+          id: input.submissionId,
+        },
+        include: {
+          quiz: true,
+          questionAnswers: {
+            include: {
+              answer: true,
+              question: {
+                include: {
+                  answers: {
+                    where: {
+                      isRightAnswer: true,
+                    },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+
+      if (!submission) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Submission not found.',
+        })
+      }
+
+      if (!submission.result) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Submission not finished.',
+        })
+      }
+
+      const report = submission.questionAnswers.map((questionAnswer) => {
+        return {
+          question: {
+            id: questionAnswer.questionId,
+            description: questionAnswer.question.description,
+          },
+          userAnswer: questionAnswer.answer,
+          rightAnswer: questionAnswer.question.answers[0],
+        }
+      })
+
+      return {
+        result: submission.result,
+        quiz: submission.quiz,
+        report,
+      }
+    },
+  })

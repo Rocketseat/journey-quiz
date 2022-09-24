@@ -24,7 +24,7 @@ export default function ResultChart({ score }: ResultChartProps) {
         style={{
           data: {
             fill: ({ datum }) => {
-              const color = datum.y > 30 ? colors.violet[500] : 'red'
+              const color = colors.emerald[500]
 
               return datum.x === 1 ? color : colors.zinc[800]
             },
