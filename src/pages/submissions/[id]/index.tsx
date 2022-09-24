@@ -153,15 +153,20 @@ export default function Submission() {
                   <RadioGroup.Item
                     key={answer.id}
                     value={answer.id}
-                    className="w-full flex items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
+                    className="w-full flex text-left items-center justify-between bg-zinc-800 border border-zinc-800 rounded-md px-6 py-4 focus:outline-none checked:border-violet-500"
                   >
-                    <span className="font-medium text-zinc-300">
+                    <span className="text-zinc-300 leading-relaxed">
                       {answer.description}
                     </span>
 
-                    <RadioGroup.Indicator>
-                      <Check className="w-5 h-5 ml-auto text-violet-500" />
-                    </RadioGroup.Indicator>
+                    <div className="w-40">
+                      <RadioGroup.Indicator>
+                        <Check
+                          className="w-5 h-5 ml-auto text-violet-500"
+                          weight="bold"
+                        />
+                      </RadioGroup.Indicator>
+                    </div>
                   </RadioGroup.Item>
                 )
               })}

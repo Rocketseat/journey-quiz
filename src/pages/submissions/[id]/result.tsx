@@ -8,16 +8,7 @@ import { trpc } from '~/utils/trpc'
 import { trpcSSG } from '~/server/trpc-ssg'
 import ResultChart from '~/components/ResultChart'
 import { getBaseUrl } from '~/utils/get-base-url'
-
-function getLevelFromResult(result: number) {
-  if (result >= 200) {
-    return 'Expert'
-  } else if (result >= 100) {
-    return 'Proficiente'
-  }
-
-  return 'Novato'
-}
+import { getLevelFromResult } from '~/utils/get-level-from-result'
 
 export default function Results() {
   const router = useRouter()

@@ -11,8 +11,8 @@ datasource db {
 
 model Quiz {
   id          String @id @default(cuid())
-  title       String
-  description String
+  title       String @db.Text
+  description String @db.Text
   imageUrl    String
   slug        String @unique
 
@@ -23,7 +23,7 @@ model Quiz {
 model Question {
   id          String @id @default(cuid())
   quizId      String
-  description String
+  description String @db.Text
   score       Int
 
   answers Answer[]
@@ -35,7 +35,7 @@ model Question {
 model Answer {
   id            String  @id @default(cuid())
   questionId    String
-  description   String
+  description   String  @db.Text
   isRightAnswer Boolean @default(false)
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
