@@ -33,14 +33,6 @@ const QuizFeedback: React.FC<QuizFeedbackProps> = ({ userName, quizName }) => {
         <MjmlSection padding="0 24px 0" cssClass="smooth">
           <MjmlColumn>
             <MjmlText
-              padding="24px 0 8px"
-              fontSize={textLg}
-              lineHeight={leadingTight}
-              cssClass="paragraph"
-            >
-              Quiz Feedback
-            </MjmlText>
-            <MjmlText
               padding="16px 0 16px"
               fontSize={textBase}
               lineHeight={leadingRelaxed}
