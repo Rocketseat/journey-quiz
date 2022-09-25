@@ -44,15 +44,18 @@ model Answer {
 }
 
 model Submission {
-  id        String    @id @default(cuid())
-  userId    String?
-  sessionId String?
-  quizId    String
-  result    Int?
-  gaveUpAt  DateTime?
-  createdAt DateTime  @default(now())
+  id             String    @id @default(cuid())
+  userId         String?
+  sessionId      String?
+  quizId         String
+  result         Int?
+  gaveUpAt       DateTime?
+  finishedAt     DateTime?
+  reportViewedAt DateTime?
+  createdAt      DateTime  @default(now())
 
-  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quiz Quiz  @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
 
   questionAnswers SubmissionQuestionAnswer[]
 }
@@ -74,4 +77,6 @@ model SubmissionQuestionAnswer {
 model User {
   id    String @id @default(cuid())
   email String @unique
+
+  submissions Submission[]
 }

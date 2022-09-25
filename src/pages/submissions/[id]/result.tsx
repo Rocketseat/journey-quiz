@@ -15,7 +15,7 @@ export default function Results() {
   const submissionId = String(router.query.id)
 
   const response = trpc.useQuery([
-    'submission.result',
+    'submissionSession.result',
     {
       submissionId,
     },
@@ -26,14 +26,14 @@ export default function Results() {
   const level = getLevelFromResult(result.result)
 
   const shareMessage = encodeURIComponent(
-    `Acabei de completar o quiz de ${result.quiz.title} da Rocketseat com um nível ${level}. Clique aqui para testar seus conhecimentos!`,
+    `Acabei de completar o quiz de ${result.quiz?.title} da Rocketseat com um nível ${level}. Clique aqui para testar seus conhecimentos!`,
   )
 
-  const shareUrl = `${getBaseUrl()}/quizzes/${result.quiz.slug}`
+  const shareUrl = `${getBaseUrl()}/quizzes/${result.quiz?.slug}`
 
   return (
     <>
-      <NextSeo title={`Resultado: ${result.quiz.title}`} />
+      <NextSeo title={`Resultado: ${result.quiz?.title}`} />
 
       <div className="mx-auto h-screen text-center flex flex-col items-stretch justify-center max-w-lg py-6 px-4">
         <div className="flex items-center justify-center flex-col">
@@ -41,7 +41,8 @@ export default function Results() {
         </div>
 
         <h1 className="text-2xl font-bold">
-          {result.quiz.title}: <span className="text-emerald-500">{level}</span>
+          {result.quiz?.title}:{' '}
+          <span className="text-emerald-500">{level}</span>
         </h1>
 
         <p className="text-md text-zinc-400 mt-2">
@@ -152,7 +153,7 @@ export default function Results() {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const submissionId = params?.id as string
 
-  await trpcSSG.prefetchQuery('submission.result', { submissionId })
+  await trpcSSG.prefetchQuery('submissionSession.result', { submissionId })
 
   return {
     props: {

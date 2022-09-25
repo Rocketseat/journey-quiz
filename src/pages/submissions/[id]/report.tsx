@@ -18,7 +18,7 @@ export default function Report() {
     useState(false)
 
   const response = trpc.useQuery([
-    'submission.report',
+    'submissionSession.report',
     {
       submissionId,
     },
@@ -30,7 +30,7 @@ export default function Report() {
 
   return (
     <>
-      <NextSeo title={`Relatório: ${report.quiz.title}`} noindex />
+      <NextSeo title={`Relatório: ${report.quiz?.title}`} noindex />
 
       <div className="mx-auto flex flex-col items-stretch justify-center max-w-2xl py-6 px-4 mb-36">
         <div className="flex items-center justify-center flex-col">
@@ -38,11 +38,12 @@ export default function Report() {
         </div>
 
         <h1 className="text-3xl font-bold text-center">
-          {report.quiz.title}: <span className="text-emerald-500">{level}</span>
+          {report.quiz?.title}:{' '}
+          <span className="text-emerald-500">{level}</span>
         </h1>
 
         <ol className="flex flex-col items-stretch divide-y divide-zinc-700 mt-6">
-          {report.report.map((item) => {
+          {report.report?.map((item) => {
             return (
               <li key={item.question.id} className="py-6 space-y-2">
                 <strong className="leading-relaxed">
@@ -143,7 +144,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const submissionId = params?.id as string
 
-  await trpcSSG.prefetchQuery('submission.report', { submissionId })
+  await trpcSSG.prefetchQuery('submissionSession.report', { submissionId })
 
   return {
     props: {

@@ -5,11 +5,11 @@ import { useRouter } from 'next/router'
 import { ArrowRight, Check, Spinner } from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as RadioGroup from '@radix-ui/react-radio-group'
+import { NextSeo } from 'next-seo'
 
-import { trpc } from '~/utils/trpc'
+import { inferQueryOutput, trpc } from '~/utils/trpc'
 import { Countdown } from '~/components/Countdown'
 import { trpcSSG } from '~/server/trpc-ssg'
-import { NextSeo } from 'next-seo'
 
 export default function Submission() {
   const router = useRouter()
@@ -20,12 +20,12 @@ export default function Submission() {
   const [isFinishingQuiz, setIsFinishingQuiz] = useState(false)
 
   const { data: submission } = trpc.useQuery([
-    'submission.get',
+    'submissionSession.get',
     { submissionId },
   ])
 
   const { data: question, refetch: fetchAnotherQuestion } = trpc.useQuery(
-    ['submission.fetchQuestion', { submissionId }],
+    ['submissionSession.fetchQuestion', { submissionId }],
     {
       onSuccess(data) {
         if (data.status === 'finished') {
@@ -37,10 +37,10 @@ export default function Submission() {
   )
 
   const { mutateAsync: sendAnswer, isLoading: isSendingAnswer } =
-    trpc.useMutation('submission.sendAnswer')
+    trpc.useMutation('submissionSession.sendAnswer')
 
   const { mutateAsync: giveUp, isLoading: isGivingUp } = trpc.useMutation(
-    'submission.giveUp',
+    'submissionSession.giveUp',
     {
       async onSuccess() {
         await router.push('/')
@@ -62,6 +62,7 @@ export default function Submission() {
     }
 
     await sendAnswer({
+      submissionId,
       submissionQuestionAnswerId: question.submissionQuestionAnswerId,
       answerId: questionAnswerId,
     })
@@ -77,6 +78,7 @@ export default function Submission() {
     }
 
     await sendAnswer({
+      submissionId,
       submissionQuestionAnswerId: question.submissionQuestionAnswerId,
     })
 
@@ -84,15 +86,14 @@ export default function Submission() {
   }
 
   const onCountdownFinish = useCallback(() => {
-    queryClient.setQueryData(
-      ['submission.fetchQuestion', { submissionId }],
-      (data: any) => {
-        return {
-          ...data,
-          status: 'late',
-        }
-      },
-    )
+    queryClient.setQueryData<
+      inferQueryOutput<'submissionSession.fetchQuestion'>
+    >(['submissionSession.fetchQuestion', { submissionId }], (data) => {
+      return {
+        ...data,
+        status: 'late',
+      }
+    })
   }, [submissionId, queryClient])
 
   return (
@@ -247,8 +248,8 @@ export default function Submission() {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const submissionId = params?.id as string
 
-  await trpcSSG.prefetchQuery('submission.get', { submissionId })
-  await trpcSSG.prefetchQuery('submission.fetchQuestion', {
+  await trpcSSG.prefetchQuery('submissionSession.get', { submissionId })
+  await trpcSSG.prefetchQuery('submissionSession.fetchQuestion', {
     submissionId,
   })
 
