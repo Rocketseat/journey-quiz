@@ -37,7 +37,8 @@ export function useCountdown({ onCountdownFinish }: CountdownParams) {
   }, [startDate, secondsToFinish])
 
   useEffect(() => {
-    if (secondsLeft === 0) {
+    if (secondsLeft !== null && secondsLeft <= 0) {
+      setSecondsLeft(0)
       clearInterval(interval)
 
       if (onCountdownFinish) {

@@ -4,6 +4,7 @@ import { TRPCError } from '@trpc/server'
 import { parseCookies, setCookie } from 'nookies'
 import { isAfter, addMinutes, differenceInSeconds } from 'date-fns'
 import { randomUUID } from 'node:crypto'
+import { trackEvent } from '../lib/active-campaign'
 
 export const submissionRouter = createRouter()
   .mutation('start', {
@@ -29,6 +30,8 @@ export const submissionRouter = createRouter()
         },
       })
 
+      // await trackEvent('quiz_share', { name: 'React' })
+
       const submissionId = submission.id
 
       return { submissionId }
@@ -51,15 +54,57 @@ export const submissionRouter = createRouter()
       const { sessionId } = parseCookies({ req: ctx.req })
 
       if (submission?.sessionId !== sessionId) {
-        if (!submission) {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'This submission was created by another user.',
-          })
-        }
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'This submission was created by another user.',
+        })
       }
 
       return submission
+    },
+  })
+  .mutation('giveUp', {
+    input: z.object({
+      submissionId: z.string().cuid(),
+    }),
+    async resolve({ ctx, input }) {
+      const submission = await ctx.prisma.submission.findUnique({
+        where: {
+          id: input.submissionId,
+        },
+      })
+
+      if (!submission) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Submission not found.',
+        })
+      }
+
+      const { sessionId } = parseCookies({ req: ctx.req })
+
+      if (submission.sessionId !== sessionId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'This submission was created by another user.',
+        })
+      }
+
+      if (submission.gaveUpAt) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You already gave up this submission.',
+        })
+      }
+
+      await ctx.prisma.submission.update({
+        where: {
+          id: submission.id,
+        },
+        data: {
+          gaveUpAt: new Date(),
+        },
+      })
     },
   })
   .mutation('sendAnswer', {
@@ -73,12 +118,22 @@ export const submissionRouter = createRouter()
           where: {
             id: input.submissionQuestionAnswerId,
           },
+          include: {
+            submission: true,
+          },
         })
 
       if (!submissionQuestionAnswer) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: "The question you're trying to answer doesn't exist.",
+        })
+      }
+
+      if (submissionQuestionAnswer.submission.gaveUpAt) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You already gave up this submission.',
         })
       }
 
@@ -98,6 +153,7 @@ export const submissionRouter = createRouter()
         },
         data: {
           answerId: isAnswerLate ? null : input.answerId,
+          answeredAt: new Date(),
           answered: true,
         },
       })
@@ -121,6 +177,13 @@ export const submissionRouter = createRouter()
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'The submission with the provided ID was not found.',
+        })
+      }
+
+      if (submission.gaveUpAt) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You already gave up this submission.',
         })
       }
 
@@ -344,9 +407,13 @@ export const submissionRouter = createRouter()
           }),
         ])
 
-      const betterThanPercentage = Math.round(
-        (quizApplicantsWithLowerResultAmount * 100) / quizApplicantsAmount,
-      )
+      const betterThanPercentage =
+        quizApplicantsAmount > 1
+          ? Math.round(
+              (quizApplicantsWithLowerResultAmount * 100) /
+                (quizApplicantsAmount - 1),
+            )
+          : 100
 
       return {
         result,

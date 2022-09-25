@@ -4,7 +4,12 @@ import { useRouter } from 'next/router'
 
 import { trpc } from '~/utils/trpc'
 import { trpcSSG } from '~/server/trpc-ssg'
-import { ArrowRight, ClockAfternoon, ListBullets } from 'phosphor-react'
+import {
+  ArrowRight,
+  ClockAfternoon,
+  ListBullets,
+  Spinner,
+} from 'phosphor-react'
 
 import rocketseatLogoImg from '~/assets/logo-rocketseat.svg'
 import Image from 'next/image'
@@ -20,8 +25,8 @@ export default function Quiz() {
 
   const { mutateAsync: startSubmission, isLoading: isStartingSubmission } =
     trpc.useMutation(['submission.start'], {
-      onSuccess(data) {
-        router.push(`/submissions/${data.submissionId}`)
+      async onSuccess(data) {
+        await router.push(`/submissions/${data.submissionId}`)
       },
     })
 
@@ -80,8 +85,14 @@ export default function Quiz() {
           disabled={isStartingSubmission}
           className="inline-flex items-center gap-2 justify-center rounded-md w-56 px-8 py-3 bg-violet-600 font-medium text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-violet-400 disabled:opacity-40 disabled:cursor-not-allowed mt-6"
         >
-          Iniciar quiz
-          <ArrowRight />
+          {isStartingSubmission ? (
+            <Spinner className="w-5 h-5 animate-spin" />
+          ) : (
+            <>
+              Iniciar quiz
+              <ArrowRight />
+            </>
+          )}
         </button>
       </main>
     </>

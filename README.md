@@ -11,3 +11,4 @@
 - [ ] Error handling on front end
 - [ ] Only one email per test
 - [ ] Split some UI do reusable components
+- [ ] Use tRPC middleware

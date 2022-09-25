@@ -17,6 +17,7 @@
     "@trpc/next": "^9.27.2",
     "@trpc/react": "^9.27.2",
     "@trpc/server": "^9.27.2",
+    "axios": "^0.27.2",
     "date-fns": "^2.29.3",
     "framer-motion": "^7.3.6",
     "next": "12.2.5",

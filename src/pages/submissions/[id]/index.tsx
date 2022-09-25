@@ -39,6 +39,21 @@ export default function Submission() {
   const { mutateAsync: sendAnswer, isLoading: isSendingAnswer } =
     trpc.useMutation('submission.sendAnswer')
 
+  const { mutateAsync: giveUp, isLoading: isGivingUp } = trpc.useMutation(
+    'submission.giveUp',
+    {
+      async onSuccess() {
+        await router.push('/')
+      },
+    },
+  )
+
+  async function handleGiveUp() {
+    if (confirm('Você realmente deseja desistir desse teste?')) {
+      await giveUp({ submissionId })
+    }
+  }
+
   async function handleSendAnswer(event: FormEvent) {
     event.preventDefault()
 
@@ -175,9 +190,15 @@ export default function Submission() {
             <div className="mt-6 grid grid-cols-2 md:flex md:flex-row md:justify-end">
               <button
                 type="button"
-                className="inline-flex mr-4 justify-center rounded-md shadow-sm px-8 py-3 bg-zinc-700 text-base font-medium text-zinc-300 hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                onClick={handleGiveUp}
+                disabled={isGivingUp}
+                className="inline-flex mr-4 justify-center rounded-md shadow-sm px-8 py-3 bg-zinc-700 text-base font-medium text-zinc-300 hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Desistir
+                {isGivingUp ? (
+                  <Spinner className="w-6 h-6 animate-spin" />
+                ) : (
+                  'Desistir'
+                )}
               </button>
 
               <button
@@ -203,13 +224,13 @@ export default function Submission() {
                   Tempo esgotado!
                 </Dialog.Title>
                 <Dialog.Description className="mt-2 text-zinc-300">
-                  O tempo para responder essa pergunta esgotou...
+                  O tempo para responder essa pergunta esgotou.
                 </Dialog.Description>
 
                 <button
                   type="button"
                   onClick={handleSendLateAnswer}
-                  className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
+                  className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-800"
                 >
                   Pular pergunta
                   <ArrowRight className="w-5 h-5" />
