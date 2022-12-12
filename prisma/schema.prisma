@@ -16,6 +16,11 @@ model Quiz {
   imageUrl    String
   slug        String @unique
 
+  activeCampaignQuizFinishedListId          String
+  activeCampaignMasterclassHotListId        String
+  activeCampaignMasterclassInterestedListId String
+  activeCampaignMasterclassCompletedListId  String
+
   questions   Question[]
   submissions Submission[]
 }

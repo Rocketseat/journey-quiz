@@ -14,6 +14,12 @@ const load = async () => {
           description: 'Quiz sobre fundamentos da web',
           imageUrl: qi % 2 === 0 ? 'javascript' : 'react',
           slug: qi % 2 === 0 ? `desenvolvimento-web-${qi}` : `react-${qi}`,
+
+          activeCampaignQuizFinishedListId: qi % 2 === 0 ? '82' : '75',
+          activeCampaignMasterclassInterestedListId: qi % 2 === 0 ? '84' : '83',
+          activeCampaignMasterclassCompletedListId: qi % 2 === 0 ? `86` : '85',
+          activeCampaignMasterclassHotListId: qi % 2 === 0 ? `88` : '87',
+
         },
       })
   
