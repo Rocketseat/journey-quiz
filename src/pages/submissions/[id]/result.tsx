@@ -1,7 +1,13 @@
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
-import { BookOpen, Check, LinkedinLogo, TwitterLogo } from 'phosphor-react'
+import {
+  BookOpen,
+  Check,
+  LinkedinLogo,
+  TwitterLogo,
+  Spinner,
+} from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 
 import { trpc } from '~/utils/trpc'
@@ -117,17 +123,32 @@ export default function Results() {
                 <input
                   type="email"
                   placeholder="Deixe seu melhor e-mail"
-                  className="bg-zinc-900 px-3 py-3 rounded block mt-1 w-full"
+                  className={`bg-zinc-900 px-3 py-3 rounded block mt-1 w-full border  ${
+                    errors?.email ? 'border-red-500' : 'border-zinc-900'
+                  }`}
                   required
                   {...register('email')}
                 />
 
+                {errors?.email && (
+                  <p className="text-red-500 text-xs italic mt-2">
+                    {errors.email.message}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
+                  className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSendingReport}
                 >
-                  <BookOpen className="w-5 h-5" weight="bold" />
-                  Receber relatório
+                  {isSendingReport ? (
+                    <Spinner className="animate-spin w-5 h-5" />
+                  ) : (
+                    <>
+                      <BookOpen className="w-5 h-5" weight="bold" />
+                      Receber relatório
+                    </>
+                  )}
                 </button>
 
                 <Dialog.Trigger
