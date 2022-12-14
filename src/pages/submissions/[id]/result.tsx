@@ -19,6 +19,8 @@ import { useForm } from 'react-hook-form'
 
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useToast } from '~/contexts/ToastProvider'
+import { useState } from 'react'
 
 const SendResultFormSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -28,16 +30,20 @@ type SendResultFormData = z.infer<typeof SendResultFormSchema>
 
 export default function Results() {
   const router = useRouter()
+  const { addToast } = useToast()
   const submissionId = String(router.query.id)
+  const [isSendReportModalOpen, setIsSendReportModalOpen] = useState(false)
 
-  const { mutateAsync: sendReport, isLoading: isSendingReport } =
-    trpc.useMutation('report.sendReport')
+  const {
+    mutateAsync: sendReport,
+    isLoading: isSendingReport,
+    data: sendReportResult,
+  } = trpc.useMutation('report.sendReport')
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<SendResultFormData>({
     resolver: zodResolver(SendResultFormSchema),
   })
@@ -45,7 +51,11 @@ export default function Results() {
   async function handleSendResultToUserEmail({ email }: SendResultFormData) {
     await sendReport({ submissionId, email })
 
-    reset()
+    setIsSendReportModalOpen(false)
+    addToast({
+      title: 'Relatório enviado com sucesso',
+      type: 'success',
+    })
   }
 
   const response = trpc.useQuery([
@@ -85,7 +95,10 @@ export default function Results() {
           outros usuários
         </p>
 
-        <Dialog.Root>
+        <Dialog.Root
+          open={isSendReportModalOpen}
+          onOpenChange={setIsSendReportModalOpen}
+        >
           <Dialog.Trigger
             type="button"
             className="mt-6 inline-flex gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
@@ -95,9 +108,9 @@ export default function Results() {
           </Dialog.Trigger>
 
           <Dialog.Portal>
-            <Dialog.Overlay className="fixed inset-0 bg-black/60" />
+            <Dialog.Overlay className="fixed inset-0 z-30 bg-black/60" />
 
-            <Dialog.Content className="bg-zinc-800 rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fixed p-6 w-full max-w-sm">
+            <Dialog.Content className="bg-zinc-800 z-40 rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fixed p-6 w-full max-w-sm">
               <Dialog.Title className="text-2xl font-bold">
                 Deixe seu e-mail e...
               </Dialog.Title>
@@ -126,10 +139,11 @@ export default function Results() {
                 <input
                   type="email"
                   placeholder="Deixe seu melhor e-mail"
-                  className={`bg-zinc-900 px-3 py-3 rounded block mt-1 w-full border  ${
+                  className={`bg-zinc-900 px-3 py-3 rounded block mt-1 w-full border disabled:opacity-50  ${
                     errors?.email ? 'border-red-500' : 'border-zinc-900'
                   }`}
                   required
+                  disabled={sendReportResult?.success === true}
                   {...register('email')}
                 />
 
@@ -142,7 +156,7 @@ export default function Results() {
                 <button
                   type="submit"
                   className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={isSendingReport}
+                  disabled={isSendingReport || sendReportResult?.success}
                 >
                   {isSendingReport ? (
                     <Spinner className="animate-spin w-5 h-5" />

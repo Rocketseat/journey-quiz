@@ -14,6 +14,7 @@
     "@prisma/client": "^4.3.1",
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-radio-group": "^1.0.0",
+    "@radix-ui/react-toast": "^1.1.2",
     "@trpc/client": "^9.27.2",
     "@trpc/next": "^9.27.2",
     "@trpc/react": "^9.27.2",
