@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server'
-import { parseCookies } from 'nookies'
+import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { z } from 'zod'
+import { trackEvent } from '../lib/active-campaign'
 import { subscribeEmailToActiveCampaignList } from '../lib/subscribe-email-to-active-campaign-list'
 import { createRouter } from './context'
 
@@ -55,7 +56,7 @@ export const reportRouter = createRouter()
 
     if (!submission.finishedAt) {
       throw new TRPCError({
-        code: 'UNAUTHORIZED',
+        code: 'BAD_REQUEST',
         message: 'You did not finish this submission.',
       })
     }
@@ -75,28 +76,50 @@ export const reportRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       const { email, submissionId } = input
+      const { submission } = ctx
 
-      const submission = await ctx.prisma.submission.findUnique({
-        where: {
-          id: submissionId,
-        },
-        include: {
-          quiz: true,
-        },
-      })
+      let [user, quiz] = await Promise.all([
+        ctx.prisma.user.findUnique({
+          where: {
+            email: input.email,
+          },
+        }),
+        ctx.prisma.quiz.findUnique({
+          where: {
+            id: ctx.submission.quizId,
+          },
+        }),
+      ])
 
-      if (!submission) {
+      if (!quiz) {
         throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Submission not found.',
+          code: 'BAD_REQUEST',
+          message: 'Quiz was not found',
         })
       }
+
+      if (!user) {
+        user = await ctx.prisma.user.create({
+          data: {
+            email: input.email,
+            submissions: {
+              create: submission,
+            },
+          },
+        })
+
+        await trackEvent('quiz_done', user.email, { name: quiz?.title })
+      }
+
+      await trackEvent('quiz_report_request', user.email, {
+        name: quiz?.title,
+      })
 
       const {
         activeCampaignQuizFinishedListId,
         activeCampaignLastSubmissionIdFieldId,
         activeCampaignLastResultFieldId,
-      } = submission?.quiz
+      } = quiz
 
       const customFields = [
         {
@@ -113,6 +136,15 @@ export const reportRouter = createRouter()
         email,
         listId: activeCampaignQuizFinishedListId,
         customFields,
+      })
+
+      destroyCookie({ res: ctx.res }, 'sessionId', {
+        path: '/',
+      })
+
+      setCookie({ res: ctx.res }, 'userId', user.id, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 15, // 15 days
       })
 
       return { success: true }

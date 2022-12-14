@@ -387,56 +387,6 @@ export const submissionSessionRouter = createRouter()
       }
     },
   })
-  .mutation('sendReport', {
-    input: submissionSessionSchema.extend({
-      email: z.string().email(),
-    }),
-    async resolve({ input, ctx }) {
-      let [user, quiz] = await Promise.all([
-        ctx.prisma.user.findUnique({
-          where: {
-            email: input.email,
-          },
-        }),
-        ctx.prisma.quiz.findUnique({
-          where: {
-            id: ctx.submission.quizId,
-          },
-        }),
-      ])
-
-      if (!user) {
-        user = await ctx.prisma.user.create({
-          data: {
-            email: input.email,
-          },
-        })
-
-        await trackEvent('quiz_done', user.email, { name: quiz?.title })
-      }
-
-      await ctx.prisma.submission.updateMany({
-        where: {
-          sessionId: ctx.sessionId,
-        },
-        data: {
-          sessionId: null,
-          userId: user.id,
-        },
-      })
-
-      await trackEvent('quiz_report_request', user.email, { name: quiz?.title })
-
-      destroyCookie({ res: ctx.res }, 'sessionId', {
-        path: '/',
-      })
-
-      setCookie({ res: ctx.res }, 'userId', user.id, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 15, // 15 days
-      })
-    },
-  })
   .query('report', {
     input: submissionSessionSchema,
     async resolve({ ctx, input }) {
@@ -475,6 +425,7 @@ export const submissionSessionRouter = createRouter()
               reportViewedAt: new Date(),
             },
           }),
+
           trackEvent('quiz_report_view', submission.user.email, {
             name: submission.quiz.title,
           }),
