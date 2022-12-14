@@ -20,6 +20,8 @@ model Quiz {
   activeCampaignMasterclassHotListId        String
   activeCampaignMasterclassInterestedListId String
   activeCampaignMasterclassCompletedListId  String
+  activeCampaignLastSubmissionIdFieldId     String
+  activeCampaignLastResultFieldId           String
 
   questions   Question[]
   submissions Submission[]

@@ -19,7 +19,9 @@ const load = async () => {
           activeCampaignMasterclassInterestedListId: qi % 2 === 0 ? '84' : '83',
           activeCampaignMasterclassCompletedListId: qi % 2 === 0 ? `86` : '85',
           activeCampaignMasterclassHotListId: qi % 2 === 0 ? `88` : '87',
-
+          
+          activeCampaignLastSubmissionIdFieldId: qi % 2 === 0 ? `36` : '34',
+          activeCampaignLastResultFieldId: qi % 2 === 0 ? `37` : '35',
         },
       })
   

@@ -9,10 +9,35 @@ import { trpcSSG } from '~/server/trpc-ssg'
 import ResultChart from '~/components/ResultChart'
 import { getBaseUrl } from '~/utils/get-base-url'
 import { getLevelFromResult } from '~/utils/get-level-from-result'
+import { useForm } from 'react-hook-form'
+
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const SendResultFormSchema = z.object({
+  email: z.string().email('Email inválido'),
+})
+
+type SendResultFormData = z.infer<typeof SendResultFormSchema>
 
 export default function Results() {
   const router = useRouter()
   const submissionId = String(router.query.id)
+
+  const { mutateAsync: sendReport, isLoading: isSendingReport } =
+    trpc.useMutation('report.sendReport')
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SendResultFormData>({
+    resolver: zodResolver(SendResultFormSchema),
+  })
+
+  async function handleSendResultToUserEmail({ email }: SendResultFormData) {
+    await sendReport({ submissionId, email })
+  }
 
   const response = trpc.useQuery([
     'submissionSession.result',
@@ -85,15 +110,16 @@ export default function Results() {
               </Dialog.Description>
 
               <form
-                // onSubmit={() => {}}
+                onSubmit={handleSubmit(handleSendResultToUserEmail)}
+                noValidate={true}
                 className="pt-4 mt-4 border-t border-t-zinc-700"
               >
                 <input
                   type="email"
-                  name="email"
                   placeholder="Deixe seu melhor e-mail"
                   className="bg-zinc-900 px-3 py-3 rounded block mt-1 w-full"
                   required
+                  {...register('email')}
                 />
 
                 <button
