@@ -6,7 +6,7 @@ import { trpcSSG } from '../server/trpc-ssg'
 import { NextSeo } from 'next-seo'
 
 import rocketseatLogoImg from '../assets/logo-rocketseat.svg'
-import { CaretRight, ClockAfternoon, ListBullets } from 'phosphor-react'
+import { ClockAfternoon, ListBullets } from 'phosphor-react'
 import Link from 'next/link'
 
 const Home: NextPage = () => {

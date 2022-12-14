@@ -1,8 +1,8 @@
 import { createRouter } from './context'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { parseCookies, setCookie, destroyCookie } from 'nookies'
-import { isAfter, addMinutes, differenceInSeconds, sub } from 'date-fns'
+import { parseCookies } from 'nookies'
+import { isAfter, addMinutes, differenceInSeconds } from 'date-fns'
 import { trackEvent } from '../lib/active-campaign'
 
 const submissionSessionSchema = z.object({
