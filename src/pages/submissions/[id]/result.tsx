@@ -37,12 +37,15 @@ export default function Results() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<SendResultFormData>({
     resolver: zodResolver(SendResultFormSchema),
   })
 
   async function handleSendResultToUserEmail({ email }: SendResultFormData) {
     await sendReport({ submissionId, email })
+
+    reset()
   }
 
   const response = trpc.useQuery([
