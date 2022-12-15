@@ -6,32 +6,37 @@ import rocketseatLogoImg from '../../assets/logo-rocketseat.svg'
 
 const buttons = [
   {
-    slug: "",
-    title: "Material complementar",
-    description: "📚 Acesse o material complementar para acelerar o seu desenvolvimento",
+    slug: '',
+    title: 'Material complementar',
+    description:
+      '📚 Acesse o material complementar para acelerar o seu desenvolvimento',
     isActive: true,
   },
   {
-    slug: "",
-    title: "Certificado",
-    description: "🎉 Parabéns! Agora você pode gerar seu certificado clicando aqui.",
+    slug: '',
+    title: 'Certificado',
+    description:
+      '🎉 Parabéns! Agora você pode gerar seu certificado clicando aqui.',
     isActive: false,
   },
 ]
 
 const page = {
-  'react': {
-    pageName: "React",
-    videoSrc: 'https://www.youtube.com/embed/pDbcC-xSat4?modestbranding=1&rel=0'
+  react: {
+    pageName: 'React',
+    videoSrc:
+      'https://www.youtube.com/embed/pDbcC-xSat4?modestbranding=1&rel=0',
   },
   'fundamentos-web': {
-    pageName: "Fundamentos WEB",
-    videoSrc: 'https://www.youtube.com/embed/EOGN5ltRqOc?modestbranding=1&rel=0'
+    pageName: 'Fundamentos WEB',
+    videoSrc:
+      'https://www.youtube.com/embed/EOGN5ltRqOc?modestbranding=1&rel=0',
   },
   'react-native': {
-    pageName: "React Native",
-    videoSrc: 'https://www.youtube.com/embed/ApSHnjXeAq0?modestbranding=1&rel=0'
-  }
+    pageName: 'React Native',
+    videoSrc:
+      'https://www.youtube.com/embed/ApSHnjXeAq0?modestbranding=1&rel=0',
+  },
 }
 
 export default function Masterclass() {
@@ -47,10 +52,11 @@ export default function Masterclass() {
         Alcance seu próximo nível em {pageName}!
       </h1>
       <p className="mt-1 text-sm text-zinc-400">
-        Ao final dessa masterclass você irá receber um certificado de participação.
+        Ao final dessa masterclass você irá receber um certificado de
+        participação.
       </p>
       <iframe
-        className='mt-4 aspect-video'
+        className="mt-4 aspect-video"
         width="100%"
         src={videoSrc}
         frameBorder="0"
@@ -63,20 +69,28 @@ export default function Masterclass() {
           return (
             <li
               key={button.title}
-              className={` ${button.isActive ? "hover:border-violet-400 cursor-pointer" : "opacity-[0.6]"} relative group p-6 flex flex-col items-start gap-4 border border-zinc-700 rounded-lg`}
+              className={` ${
+                button.isActive
+                  ? 'hover:border-violet-400 cursor-pointer'
+                  : 'opacity-[0.6]'
+              } relative group p-6 flex flex-col items-start gap-4 border border-zinc-700 rounded-lg`}
             >
               <div className="min-w-0 flex-1">
-                <div className={`${button.isActive ? "group-hover:text-violet-400" : ""} font-medium`}>
-                  {button.isActive ?
-                    <Link href={`/quizzes/${button.slug}`} >
+                <div
+                  className={`${
+                    button.isActive ? 'group-hover:text-violet-400' : ''
+                  } font-medium`}
+                >
+                  {button.isActive ? (
+                    <Link href={`/quizzes/${button.slug}`}>
                       <a className="font-medium">
                         <span className="absolute inset-0" aria-hidden="true" />
                         {button.title}
                       </a>
-                    </Link> :
+                    </Link>
+                  ) : (
                     button.title
-                  }
-
+                  )}
                 </div>
                 <p className="text-sm text-zinc-400 mt-1">
                   {button.description}
@@ -95,11 +109,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   if (!(slug in page)) {
     return {
-      notFound: true
+      notFound: true,
     }
   }
 
   return {
-    props: {}
+    props: {},
   }
 }

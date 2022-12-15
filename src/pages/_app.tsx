@@ -9,13 +9,14 @@ import type { AppRouter } from '../server/router'
 import '../styles/globals.css'
 import { getBaseUrl } from '~/utils/get-base-url'
 import { DefaultSeo } from 'next-seo'
+import { ToastProvider } from '~/contexts/ToastProvider'
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <ToastProvider>
       <DefaultSeo titleTemplate="%s | Rocketseat" />
       <Component {...pageProps} />
-    </>
+    </ToastProvider>
   )
 }
 
