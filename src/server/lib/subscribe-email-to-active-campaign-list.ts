@@ -22,8 +22,9 @@ export async function subscribeEmailToActiveCampaignList({
 
   let contactId
 
-  // Caso não encontre nenhum contato com o e-mail, cria ele
-  if (getContactResponse.data.meta.total === `0`) {
+  const contactDoesNotExists = getContactResponse.data.meta.total === `0`
+
+  if (contactDoesNotExists) {
     const createContactResponse = await activeCampaignAxiosClient.post(
       `/contacts`,
       {
@@ -45,11 +46,13 @@ export async function subscribeEmailToActiveCampaignList({
     })
   }
 
+  const SUBSCRIBE_CONTACT_TO_LIST_STATUS = 1
+
   await activeCampaignAxiosClient.post(`/contactLists`, {
     contactList: {
       list: listId,
       contact: contactId,
-      status: 1,
+      status: SUBSCRIBE_CONTACT_TO_LIST_STATUS,
     },
   })
 }
