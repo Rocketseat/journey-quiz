@@ -103,8 +103,20 @@ export const reportRouter = createRouter()
           data: {
             email: input.email,
             submissions: {
-              create: submission,
+              connect: {
+                id: submission.id,
+              },
             },
+          },
+        })
+
+        await ctx.prisma.submission.update({
+          where: {
+            id: submission.id,
+          },
+          data: {
+            userId: user.id,
+            sessionId: null,
           },
         })
 

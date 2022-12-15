@@ -7,7 +7,7 @@ const load = async () => {
   try {
     await prisma.quiz.deleteMany()
 
-    for (let qi = 0; qi <= 10; qi++) {
+    for (let qi = 0; qi <= 1; qi++) {
       const quiz = await prisma.quiz.create({
         data: {
           title: qi % 2 === 0 ? 'Desenvolvimento web' : 'React',
