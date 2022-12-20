@@ -30,6 +30,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.40.0",
     "react-query": "^3.39.2",
+    "react-youtube": "^10.1.0",
     "superjson": "^1.10.0",
     "victory": "^36.6.7",
     "zod": "^3.20.0"
