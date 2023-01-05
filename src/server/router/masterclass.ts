@@ -81,7 +81,7 @@ export const masterclassRouter = createRouter()
       const [user, quiz] = await Promise.all([
         ctx.prisma.user.findUnique({
           where: {
-            id: submission.userId!,
+            id: submission.userId,
           },
         }),
         ctx.prisma.quiz.findUnique({
@@ -127,7 +127,7 @@ export const masterclassRouter = createRouter()
       const [user, quiz] = await Promise.all([
         ctx.prisma.user.findUnique({
           where: {
-            id: submission.userId!,
+            id: submission.userId ?? undefined,
           },
         }),
         ctx.prisma.quiz.findUnique({
