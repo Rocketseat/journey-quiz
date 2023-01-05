@@ -57,7 +57,7 @@ export default async function createImage(req: NextRequest) {
     (
       <div tw="flex w-full h-full relative">
         <img
-          src={`${process.env.NEXT_PUBLIC_BASE_URL}/certificate-react-bg.png`}
+          src={`${process.env.BASE_URL}/certificate-react-bg.png`}
           tw="w-full h-full"
         />
         <div

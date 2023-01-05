@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { z } from 'zod'
+import { clientEnv } from '~/env/schema.mjs'
 import { addExistingUserToInterestedActiveCampaignList } from '../lib/add-existing-user-to-interested-active-campaign-list'
 import { addExistingUserToMasterclassCompletedActiveCampaignList } from '../lib/add-existing-user-to-masterclass-completed-active-campaign-list copy'
 import { createRouter } from './context'
@@ -168,7 +169,7 @@ export const masterclassRouter = createRouter()
       })
 
       const response = await axios.get(
-        'http://localhost:3000/api/generate/certificateImage',
+        `${process.env.BASE_URL}/api/generate/certificateImage`,
         {
           params: {
             name,
