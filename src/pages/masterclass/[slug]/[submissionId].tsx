@@ -4,12 +4,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Youtube, { YouTubeEvent } from 'react-youtube'
+import PDFDocument from 'pdfkit/js/pdfkit.standalone'
+
+import blobStream from 'blob-stream'
 
 import { trpcSSG } from '~/server/trpc-ssg'
 
 import rocketseatLogoImg from '~/assets/logo-rocketseat.svg'
 import * as Dialog from '@radix-ui/react-dialog'
-import { BookOpen, Check, Spinner } from 'phosphor-react'
+import { BookOpen, Spinner } from 'phosphor-react'
 import { trpc } from '~/utils/trpc'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -78,15 +81,35 @@ export default function Masterclass() {
     }
   }
 
+  async function generateCertificatePDFFile(imageBase64: string) {
+    const doc = new PDFDocument({ size: [842, 595] })
+
+    const stream = doc.pipe(blobStream())
+
+    const imageBuffer = Buffer.from(imageBase64, 'base64')
+
+    doc.image(imageBuffer, 0, 0, { width: 842, height: 595 })
+
+    doc.end()
+
+    stream.on('finish', () => {
+      const blob = stream.toBlob('application/pdf')
+
+      window.open(URL.createObjectURL(blob), '_blank')
+    })
+  }
+
   async function handleGenerateUserCertificate({
     name,
     phone,
   }: GenerateCertificateFormData) {
-    await generateCertificate({
+    const { certificate } = await generateCertificate({
       name,
       phone,
       submissionId,
     })
+
+    generateCertificatePDFFile(certificate)
 
     addToast({
       title: 'Certificado gerado com sucesso',

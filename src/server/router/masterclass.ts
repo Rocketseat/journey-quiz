@@ -1,5 +1,7 @@
 import { TRPCError } from '@trpc/server'
+import axios from 'axios'
 import { parseCookies } from 'nookies'
+import { arrayBuffer } from 'stream/consumers'
 import { z } from 'zod'
 import { addExistingUserToInterestedActiveCampaignList } from '../lib/add-existing-user-to-interested-active-campaign-list'
 import { addExistingUserToMasterclassCompletedActiveCampaignList } from '../lib/add-existing-user-to-masterclass-completed-active-campaign-list copy'
@@ -159,6 +161,18 @@ export const masterclassRouter = createRouter()
         phone,
       })
 
-      return { success: true }
+      const response = await axios.get(
+        'http://localhost:3000/api/generate/certificateImage',
+        {
+          params: {
+            name,
+            masterclassSlug: 'react',
+          },
+          responseType: 'text',
+          responseEncoding: 'base64',
+        },
+      )
+
+      return { certificate: response.data, success: true }
     },
   })
