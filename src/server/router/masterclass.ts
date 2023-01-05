@@ -1,7 +1,6 @@
 import { TRPCError } from '@trpc/server'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
-import { arrayBuffer } from 'stream/consumers'
 import { z } from 'zod'
 import { addExistingUserToInterestedActiveCampaignList } from '../lib/add-existing-user-to-interested-active-campaign-list'
 import { addExistingUserToMasterclassCompletedActiveCampaignList } from '../lib/add-existing-user-to-masterclass-completed-active-campaign-list copy'
