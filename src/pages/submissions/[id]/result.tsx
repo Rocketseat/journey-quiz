@@ -53,7 +53,7 @@ export default function Results() {
 
     setIsSendReportModalOpen(false)
     addToast({
-      title: 'Relatório enviado com sucesso',
+      title: 'Você receberá o relatório completo por e-mail em breve.',
       type: 'success',
     })
   }
@@ -197,6 +197,8 @@ export default function Results() {
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
             className="text-zinc-400 hover:text-violet-300"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <span className="sr-only">Instagram</span>
             <LinkedinLogo className="h-6 w-6 inline" />
@@ -204,6 +206,8 @@ export default function Results() {
           <a
             href={`http://twitter.com/share?text=${shareMessage}&url=${shareUrl}`}
             className="text-zinc-400 hover:text-violet-300"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <span className="sr-only">Twitter</span>
             <TwitterLogo className="h-6 w-6 inline" />
