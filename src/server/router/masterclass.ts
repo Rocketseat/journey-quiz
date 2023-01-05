@@ -43,6 +43,13 @@ export const masterclassRouter = createRouter()
       })
     }
 
+    if (!submission.userId) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'This submission does not have an userId.',
+      })
+    }
+
     if (userId && submission?.userId !== userId) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
