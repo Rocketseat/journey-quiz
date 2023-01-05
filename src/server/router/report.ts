@@ -7,7 +7,6 @@ import { createRouter } from './context'
 
 const reportSchema = z.object({
   submissionId: z.string().cuid(),
-  email: z.string().email(),
 })
 
 export const reportRouter = createRouter()
