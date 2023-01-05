@@ -111,6 +111,8 @@ export default function Masterclass() {
 
     generateCertificatePDFFile(certificate)
 
+    setIsGenerateCertificateModalOpen(false)
+
     addToast({
       title: 'Certificado gerado com sucesso',
       type: 'success',
