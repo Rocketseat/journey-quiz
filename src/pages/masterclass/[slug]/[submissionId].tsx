@@ -69,7 +69,11 @@ export default function Masterclass() {
     data: generateCertificateResult,
   } = trpc.useMutation('masterclass.generateCertificate')
 
-  const checkElapsedTime = (e: YouTubeEvent<number>) => {
+  const { mutateAsync: completeMasterclass } = trpc.useMutation(
+    'masterclass.completeMasterclass',
+  )
+
+  async function checkElapsedTime(e: YouTubeEvent<number>) {
     const duration = e.target.getDuration()
     const currentTime = e.target.getCurrentTime()
 
@@ -77,6 +81,8 @@ export default function Masterclass() {
     const targetProgress = duration * videoProgressTargetMultiplier
 
     if (currentTime >= targetProgress) {
+      await completeMasterclass({ submissionId })
+
       setIsCertificateAvailable(true)
     }
   }

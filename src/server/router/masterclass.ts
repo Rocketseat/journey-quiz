@@ -2,8 +2,7 @@ import { TRPCError } from '@trpc/server'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { z } from 'zod'
-import { addExistingUserToInterestedActiveCampaignList } from '../lib/add-existing-user-to-interested-active-campaign-list'
-import { addExistingUserToMasterclassCompletedActiveCampaignList } from '../lib/add-existing-user-to-masterclass-completed-active-campaign-list copy'
+import { addTagToActiveCampaignContact } from '../lib/add-tag-to-active-campaign-contact'
 import { createRouter } from './context'
 
 const masterclassSchema = z.object({
@@ -112,14 +111,54 @@ export const masterclassRouter = createRouter()
         })
       }
 
-      const { activeCampaignMasterclassInterestedListId } = quiz
+      const { activeCampaignMasterclassInterestedTagId } = quiz
 
-      await addExistingUserToInterestedActiveCampaignList({
+      await addTagToActiveCampaignContact({
         email: user.email,
-        listId: activeCampaignMasterclassInterestedListId,
+        tagId: activeCampaignMasterclassInterestedTagId,
       })
 
       return { success: true }
+    },
+  })
+  .mutation('completeMasterclass', {
+    input: masterclassSchema,
+    async resolve({ ctx, input }) {
+      const { submission } = ctx
+
+      const [user, quiz] = await Promise.all([
+        ctx.prisma.user.findUnique({
+          where: {
+            id: submission.userId!,
+          },
+        }),
+        ctx.prisma.quiz.findUnique({
+          where: {
+            id: ctx.submission.quizId,
+          },
+        }),
+      ])
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'User does not exist',
+        })
+      }
+
+      if (!quiz) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Quiz was not found',
+        })
+      }
+
+      const { activeCampaignMasterclassCompletedTagId } = quiz
+
+      await addTagToActiveCampaignContact({
+        email: user.email,
+        tagId: activeCampaignMasterclassCompletedTagId,
+      })
     },
   })
   .mutation('generateCertificate', {
@@ -158,13 +197,15 @@ export const masterclassRouter = createRouter()
         })
       }
 
-      const { activeCampaignMasterclassCompletedListId } = quiz
+      const { activeCampaignMasterclassCertifiedTagId } = quiz
 
-      await addExistingUserToMasterclassCompletedActiveCampaignList({
+      await addTagToActiveCampaignContact({
         email: user.email,
-        listId: activeCampaignMasterclassCompletedListId,
-        name,
-        phone,
+        tagId: activeCampaignMasterclassCertifiedTagId,
+        user: {
+          firstName: name,
+          phone,
+        },
       })
 
       const response = await axios.get(
