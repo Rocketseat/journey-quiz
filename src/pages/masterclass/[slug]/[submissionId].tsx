@@ -224,7 +224,6 @@ export default function Masterclass() {
                     errors?.name ? 'border-red-500' : 'border-zinc-900'
                   }`}
                   required
-                  disabled={generateCertificateResult?.success === true}
                   {...register('name')}
                 />
 
