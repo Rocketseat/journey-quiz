@@ -1,24 +1,47 @@
 import { activeCampaignAxiosClient } from '~/services/activeCampaignAxiosClient'
 
-interface SubscribeUserEmailToActiveCampaignListProps {
+interface AddTagToActiveCampaignContactProps {
   email: string
-  listId: string
-  customFields: {
+  tagId: string
+  customFields?: {
     field: string
     value: string
   }[]
+  user?: {
+    firstName: string
+    phone: string
+  }
 }
 
-export async function subscribeEmailToActiveCampaignList({
+interface ContactData {
+  email: string
+  fieldValues?: {
+    field: string
+    value: string
+  }[]
+  user?: {
+    firstName: string
+    phone: string
+  }
+}
+
+export async function addTagToActiveCampaignContact({
   email,
-  listId,
+  tagId,
   customFields,
-}: SubscribeUserEmailToActiveCampaignListProps) {
+  user,
+}: AddTagToActiveCampaignContactProps) {
   const getContactResponse = await activeCampaignAxiosClient.get(`/contacts`, {
     params: {
       email,
     },
   })
+
+  const contactData: ContactData = {
+    email,
+    ...(user || {}),
+    ...({ fieldValues: customFields } || {}),
+  }
 
   let contactId
 
@@ -28,10 +51,7 @@ export async function subscribeEmailToActiveCampaignList({
     const createContactResponse = await activeCampaignAxiosClient.post(
       `/contacts`,
       {
-        contact: {
-          email,
-          fieldValues: customFields,
-        },
+        contact: contactData,
       },
     )
 
@@ -40,19 +60,14 @@ export async function subscribeEmailToActiveCampaignList({
     contactId = getContactResponse.data.contacts[0].id
 
     await activeCampaignAxiosClient.put(`/contacts/${contactId}`, {
-      contact: {
-        fieldValues: customFields,
-      },
+      contact: contactData,
     })
   }
 
-  const SUBSCRIBE_CONTACT_TO_LIST_STATUS = 1
-
-  await activeCampaignAxiosClient.post(`/contactLists`, {
-    contactList: {
-      list: listId,
+  await activeCampaignAxiosClient.post(`/contactTags`, {
+    contactTag: {
+      tag: tagId,
       contact: contactId,
-      status: SUBSCRIBE_CONTACT_TO_LIST_STATUS,
     },
   })
 }

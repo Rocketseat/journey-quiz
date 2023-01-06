@@ -15,10 +15,11 @@ const load = async () => {
           imageUrl: qi % 2 === 0 ? 'javascript' : 'react',
           slug: qi % 2 === 0 ? `desenvolvimento-web-${qi}` : `react-${qi}`,
 
-          activeCampaignQuizFinishedListId: qi % 2 === 0 ? '82' : '75',
-          activeCampaignMasterclassInterestedListId: qi % 2 === 0 ? '84' : '83',
-          activeCampaignMasterclassCompletedListId: qi % 2 === 0 ? `86` : '85',
-          activeCampaignMasterclassHotListId: qi % 2 === 0 ? `88` : '87',
+          activeCampaignQuizFinishedTagId: qi % 2 === 0 ? '77' : '73',
+          activeCampaignMasterclassInterestedTagId: qi % 2 === 0 ? '78' : '74',
+          activeCampaignMasterclassCompletedTagId: qi % 2 === 0 ? `79` : '75',
+          activeCampaignMasterclassCertifiedTagId: qi % 2 === 0 ? `82` : '81',
+          activeCampaignMasterclassHotTagId: qi % 2 === 0 ? `80` : '76',
           
           activeCampaignLastSubmissionIdFieldId: qi % 2 === 0 ? `36` : '34',
           activeCampaignLastResultFieldId: qi % 2 === 0 ? `37` : '35',

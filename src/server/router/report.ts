@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { z } from 'zod'
 import { trackEvent } from '../lib/active-campaign'
-import { subscribeEmailToActiveCampaignList } from '../lib/subscribe-email-to-active-campaign-list'
+import { addTagToActiveCampaignContact } from '../lib/add-tag-to-active-campaign-contact'
 import { createRouter } from './context'
 
 const reportSchema = z.object({
@@ -80,7 +80,7 @@ export const reportRouter = createRouter()
       let [user, quiz] = await Promise.all([
         ctx.prisma.user.findUnique({
           where: {
-            email: input.email,
+            email,
           },
         }),
         ctx.prisma.quiz.findUnique({
@@ -109,25 +109,21 @@ export const reportRouter = createRouter()
           },
         })
 
-        await ctx.prisma.submission.update({
-          where: {
-            id: submission.id,
-          },
-          data: {
-            userId: user.id,
-            sessionId: null,
-          },
-        })
-
         await trackEvent('quiz_done', user.email, { name: quiz?.title })
       }
 
-      await trackEvent('quiz_report_request', user.email, {
-        name: quiz?.title,
+      await ctx.prisma.submission.update({
+        where: {
+          id: submission.id,
+        },
+        data: {
+          userId: user.id,
+          sessionId: null,
+        },
       })
 
       const {
-        activeCampaignQuizFinishedListId,
+        activeCampaignQuizFinishedTagId,
         activeCampaignLastSubmissionIdFieldId,
         activeCampaignLastResultFieldId,
       } = quiz
@@ -143,10 +139,14 @@ export const reportRouter = createRouter()
         },
       ]
 
-      await subscribeEmailToActiveCampaignList({
+      await addTagToActiveCampaignContact({
         email,
-        listId: activeCampaignQuizFinishedListId,
+        tagId: activeCampaignQuizFinishedTagId,
         customFields,
+      })
+
+      await trackEvent('quiz_report_request', user.email, {
+        name: quiz?.title,
       })
 
       destroyCookie({ res: ctx.res }, 'sessionId', {

@@ -15,12 +15,13 @@ model Quiz {
   imageUrl    String
   slug        String @unique
 
-  activeCampaignQuizFinishedListId          String
-  activeCampaignMasterclassHotListId        String
-  activeCampaignMasterclassInterestedListId String
-  activeCampaignMasterclassCompletedListId  String
-  activeCampaignLastSubmissionIdFieldId     String
-  activeCampaignLastResultFieldId           String
+  activeCampaignQuizFinishedTagId          String
+  activeCampaignMasterclassHotTagId        String
+  activeCampaignMasterclassInterestedTagId String
+  activeCampaignMasterclassCompletedTagId  String
+  activeCampaignMasterclassCertifiedTagId  String
+  activeCampaignLastSubmissionIdFieldId    String
+  activeCampaignLastResultFieldId          String
 
   questions   Question[]
   submissions Submission[]

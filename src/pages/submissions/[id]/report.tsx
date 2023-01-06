@@ -9,6 +9,7 @@ import ResultChart from '~/components/ResultChart'
 import { getLevelFromResult } from '~/utils/get-level-from-result'
 import { ArrowRight, Check, VideoCamera, X } from 'phosphor-react'
 import { useState } from 'react'
+import Link from 'next/link'
 
 export default function Report() {
   const router = useRouter()
@@ -101,13 +102,15 @@ export default function Report() {
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 justify-center rounded-md px-8 py-3 bg-violet-600 font-medium text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-violet-400 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Assistir
-              <ArrowRight />
-            </button>
+            <Link href={`/masterclass/react/${submissionId}`} passHref>
+              <a
+                type="button"
+                className="inline-flex items-center gap-2 justify-center rounded-md px-8 py-3 bg-violet-600 font-medium text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-violet-400 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Assistir
+                <ArrowRight />
+              </a>
+            </Link>
           </div>
         </motion.div>
 
