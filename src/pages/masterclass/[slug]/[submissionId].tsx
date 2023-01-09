@@ -253,10 +253,7 @@ export default function Masterclass() {
                 <button
                   type="submit"
                   className="mt-6 flex w-full gap-2 justify-center items-center rounded-md border border-transparent bg-violet-600 py-3 px-8 text-md font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={
-                    isGeneratingCertificate ||
-                    generateCertificateResult?.success
-                  }
+                  disabled={isGeneratingCertificate}
                 >
                   {isGeneratingCertificate ? (
                     <Spinner className="animate-spin w-5 h-5" />
